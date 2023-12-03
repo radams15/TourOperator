@@ -22,7 +22,6 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         string connectionString = Configuration?["ConnectionStrings:DefaultConnection"] ?? "";
-
         SqlConnection connection = new SqlConnection(connectionString);
 
         return View();
