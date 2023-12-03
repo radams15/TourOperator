@@ -3,9 +3,9 @@ using Microsoft.Data.SqlClient;
 
 namespace TourOperator.Models;
 
-public class CustomerDao: Dao
+public class CustomerRepository: Repository
 {
-    public CustomerDao(string? connectionString)
+    public CustomerRepository(string? connectionString)
         : base(connectionString)
     {
         InitTable();

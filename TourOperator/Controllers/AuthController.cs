@@ -12,7 +12,10 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
-    private CustomerDao _customerDao;
+    private CustomerRepository _customerRepository;
+    private readonly ILogger<ViewController> _logger;
+    private IConfiguration? _configuration;
+
     
     public class LoginCredentials
     {
@@ -26,21 +29,18 @@ public class AuthController : ControllerBase
         public string password { get; set; }
         public string password2 { get; set; }
     }
-    
-    private readonly ILogger<ViewController> _logger;
-    private IConfiguration? Configuration;
 
     public AuthController(IConfiguration configuration, ILogger<ViewController> logger)
     {
         _logger = logger;
-        Configuration = configuration;
-        _customerDao = new CustomerDao(configuration.GetConnectionString("DefaultConnection"));
+        _configuration = configuration;
+        _customerRepository = new CustomerRepository(configuration.GetConnectionString("DefaultConnection"));
     }
 
     [HttpGet("/logout")]
     public async Task<ActionResult> Logout()
     {
-        _logger.LogInformation("User {User} logged out.", User.Identity.Name);
+        _logger.LogInformation("User {} logged out.", User.Identity.Name);
         
         await HttpContext.SignOutAsync(
             CookieAuthenticationDefaults.AuthenticationScheme);
@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
     {
-        Customer? existing = _customerDao.GetCustomer(creds.username);
+        Customer? existing = _customerRepository.GetCustomer(creds.username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
@@ -75,16 +75,18 @@ public class AuthController : ControllerBase
             
         };
         
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+        await HttpContext.SignInAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme, 
             new ClaimsPrincipal(claimsIdentity), 
-            authProperties);
+            authProperties
+        );
         
-        _logger.LogInformation("User {User} logged in.", existing.Username);
+        _logger.LogInformation("User {} logged in.", existing.Username);
         
         return Redirect("/");
         
 INVALID_PASSWORD:
-        _logger.LogInformation("Failed login, User {User}.", creds.username);
+        _logger.LogInformation("Failed login, User {}.", creds.username);
         return Problem("Invalid username or password");
     }
     
@@ -102,7 +104,7 @@ INVALID_PASSWORD:
             Password = passwordHash
         };
         
-        Customer? createdCustomer = _customerDao.CreateCustomer(customer);
+        Customer? createdCustomer = _customerRepository.CreateCustomer(customer);
 
         if (createdCustomer != null)
             return Ok(createdCustomer);
@@ -110,7 +112,7 @@ INVALID_PASSWORD:
         return Problem("Failed to create customer");
     }
     
-    static string Sha256(string rawData)
+    private static string Sha256(string rawData)
     {
         using (SHA256 sha256Hash = SHA256.Create())
         {

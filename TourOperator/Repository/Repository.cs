@@ -2,11 +2,11 @@ using Microsoft.Data.SqlClient;
 
 namespace TourOperator.Models;
 
-public class Dao
+public class Repository
 {
     private readonly string _connectionString;
 
-    protected Dao(string? connectionString)
+    protected Repository(string? connectionString)
     {
         _connectionString = connectionString
                            ?? throw new NullReferenceException("SQL connection string cannot be null!");
