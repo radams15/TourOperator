@@ -32,6 +32,12 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    [HttpGet("register")]
+    public IActionResult Register()
+    {
+        return View();
+    }
 
     [HttpGet("privacy")]
     public IActionResult Privacy()

@@ -14,7 +14,6 @@ public class Dao
 
     protected SqlConnection GetConnection()
     {
-        Console.WriteLine($"Connection String: '{_connectionString}'");
         return new SqlConnection(_connectionString)
                    ?? throw new NullReferenceException("Could not connect to SQL Server!");
     }

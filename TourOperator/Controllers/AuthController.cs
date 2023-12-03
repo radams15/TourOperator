@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using TourOperator.Models;
 
@@ -8,49 +10,86 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
-    private UserDao _userDao;
+    private CustomerDao _customerDao;
     
     public class LoginCredentials
     {
-        public string Username { get; }
-        public string Password { get; }
+        public string username { get; set; }
+        public string password { get; set; }
     }
     
     public class RegisterCredentials
     {
-        public string Username { get; }
-        public string Password { get; }
-        public string Password2 { get; }
+        public string username { get; set; }
+        public string password { get; set; }
+        public string password2 { get; set; }
     }
     
     private readonly ILogger<HomeController> _logger;
-    IConfiguration? Configuration { get; }
+    private IConfiguration? Configuration;
 
     public AuthController(IConfiguration configuration, ILogger<HomeController> logger)
     {
         _logger = logger;
         Configuration = configuration;
-        _userDao = new UserDao(configuration.GetConnectionString("DefaultConnection"));
+        _customerDao = new CustomerDao(configuration.GetConnectionString("DefaultConnection"));
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromForm] LoginCredentials creds)
+    public ActionResult<Customer> Login([FromForm] LoginCredentials creds)
     {
-        return Ok("Success");
+        Customer? existing = _customerDao.GetCustomer(creds.username);
+
+        if (existing == null)
+            goto INVALID_PASSWORD;
+
+        string attemptHash = Sha256(creds.password);
+
+        if (existing.Password != attemptHash)
+            goto INVALID_PASSWORD;
+        
+        return Ok(existing);
+        
+INVALID_PASSWORD:
+        return Problem("Invalid username or password");
     }
     
-    [HttpPost("login")]
-    public IActionResult Register([FromForm] RegisterCredentials creds)
+    [HttpPost("register")]
+    public ActionResult<Customer> Register([FromForm] RegisterCredentials creds)
     {
-        if (creds.Password != creds.Password2)
+        if (creds.password != creds.password2)
             return Problem("Password 1 != Password 2");
+
+        string passwordHash = Sha256(creds.password);
         
-        return Ok("Success");
+        Customer customer = new()
+        {
+            Username = creds.username,
+            Password = passwordHash
+        };
+        
+        Customer? createdCustomer = _customerDao.CreateCustomer(customer);
+
+        if (createdCustomer != null)
+            return Ok(createdCustomer);
+        
+        return Problem("Failed to create customer");
+    }
+    
+    static string Sha256(string rawData)
+    {
+        using (SHA256 sha256Hash = SHA256.Create())
+        {
+            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
+
+            StringBuilder builder = new();
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                builder.Append(bytes[i].ToString("x2"));
+            }
+            
+            return builder.ToString();
+        }
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return Problem("Error");
-    }
 }
