@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using TourOperator.Models;
@@ -7,12 +8,12 @@ namespace TourOperator.Controllers;
 
 [ApiController]
 [Route("/")]
-public class HomeController : Controller
+public class ViewController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<ViewController> _logger;
     IConfiguration? Configuration { get; }
 
-    public HomeController(IConfiguration configuration, ILogger<HomeController> logger)
+    public ViewController(IConfiguration configuration, ILogger<ViewController> logger)
     {
         _logger = logger;
         Configuration = configuration;
@@ -38,9 +39,10 @@ public class HomeController : Controller
     {
         return View();
     }
-
-    [HttpGet("privacy")]
-    public IActionResult Privacy()
+    
+    [HttpGet("customer")]
+    [Authorize]
+    public IActionResult Customer()
     {
         return View();
     }

@@ -1,7 +1,9 @@
-﻿using System.Security.Cryptography;
+﻿using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using TourOperator.Models;
 
 namespace TourOperator.Controllers;
@@ -25,18 +27,29 @@ public class AuthController : ControllerBase
         public string password2 { get; set; }
     }
     
-    private readonly ILogger<HomeController> _logger;
+    private readonly ILogger<ViewController> _logger;
     private IConfiguration? Configuration;
 
-    public AuthController(IConfiguration configuration, ILogger<HomeController> logger)
+    public AuthController(IConfiguration configuration, ILogger<ViewController> logger)
     {
         _logger = logger;
         Configuration = configuration;
         _customerDao = new CustomerDao(configuration.GetConnectionString("DefaultConnection"));
     }
 
+    [HttpGet("/logout")]
+    public async Task<ActionResult> Logout()
+    {
+        _logger.LogInformation("User {User} logged out.", User.Identity.Name);
+        
+        await HttpContext.SignOutAsync(
+            CookieAuthenticationDefaults.AuthenticationScheme);
+        
+        return Redirect("/");
+    }
+
     [HttpPost("login")]
-    public ActionResult<Customer> Login([FromForm] LoginCredentials creds)
+    public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
     {
         Customer? existing = _customerDao.GetCustomer(creds.username);
 
@@ -47,10 +60,31 @@ public class AuthController : ControllerBase
 
         if (existing.Password != attemptHash)
             goto INVALID_PASSWORD;
+
+        var claims = new List<Claim>
+        {
+            new (ClaimTypes.Name, existing.Username),
+            new (ClaimTypes.Role, RoleName.Customer),
+        };
+
+        var claimsIdentity = new ClaimsIdentity(
+            claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        var authProperties = new AuthenticationProperties
+        {
+            
+        };
         
-        return Ok(existing);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, 
+            new ClaimsPrincipal(claimsIdentity), 
+            authProperties);
+        
+        _logger.LogInformation("User {User} logged in.", existing.Username);
+        
+        return Redirect("/");
         
 INVALID_PASSWORD:
+        _logger.LogInformation("Failed login, User {User}.", creds.username);
         return Problem("Invalid username or password");
     }
     
