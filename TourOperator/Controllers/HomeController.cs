@@ -27,15 +27,21 @@ public class HomeController : Controller
 
         return View();
     }
+    
+    [HttpGet("login")]
+    public IActionResult Login()
+    {
+        return View();
+    }
 
-    [HttpGet("/privacy")]
+    [HttpGet("privacy")]
     public IActionResult Privacy()
     {
         return View();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [Route("/error")]
+    [Route("error")]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

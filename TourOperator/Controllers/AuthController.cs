@@ -1,7 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using TourOperator.Models;
 
 namespace TourOperator.Controllers;
 
@@ -9,6 +7,12 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
+    public class Credentials
+    {
+        public string username { get; set; }
+        public string password { get; set; }
+    }
+    
     private readonly ILogger<HomeController> _logger;
     IConfiguration? Configuration { get; }
 
@@ -18,12 +22,14 @@ public class AuthController : ControllerBase
         Configuration = configuration;
     }
 
-    [HttpGet("/login")]
-    public IActionResult Login()
+    [HttpPost("login")]
+    public IActionResult Login([FromForm] Credentials creds)
     {
         string connectionString = Configuration?["ConnectionStrings:DefaultConnection"] ?? "";
         SqlConnection connection = new SqlConnection(connectionString);
 
+        _logger.Log(LogLevel.Error, $"Creds: {creds.username} {creds.password}");
+        
         return Ok("Success");
     }
 
