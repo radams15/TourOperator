@@ -2,9 +2,9 @@ using Microsoft.Data.SqlClient;
 
 namespace TourOperator.Models;
 
-public class UserDAO: DAO
+public class UserDao: Dao
 {
-    public UserDAO(string connectionString)
+    public UserDao(string? connectionString)
         : base(connectionString)
     {
         Console.WriteLine("Init DAO!");
@@ -13,7 +13,7 @@ public class UserDAO: DAO
 
     private void InitTable()
     {
-        string InitString = @"
+        string initString = @"
          IF OBJECT_ID(N'dbo.Customer', N'U') IS NULL BEGIN
             CREATE TABLE Customer (
                 CustomerNumber INTEGER NOT NULL PRIMARY KEY,
@@ -28,7 +28,7 @@ public class UserDAO: DAO
 
         using (var conn = GetConnection())
         {
-            SqlCommand cmd = new SqlCommand(InitString, conn);
+            SqlCommand cmd = new SqlCommand(initString, conn);
             
             conn.Open();
             cmd.ExecuteNonQuery();

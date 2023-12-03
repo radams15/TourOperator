@@ -8,12 +8,19 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
-    private UserDAO _userDao;
+    private UserDao _userDao;
     
-    public class Credentials
+    public class LoginCredentials
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
+        public string Username { get; }
+        public string Password { get; }
+    }
+    
+    public class RegisterCredentials
+    {
+        public string Username { get; }
+        public string Password { get; }
+        public string Password2 { get; }
     }
     
     private readonly ILogger<HomeController> _logger;
@@ -23,16 +30,20 @@ public class AuthController : ControllerBase
     {
         _logger = logger;
         Configuration = configuration;
-        _userDao = new(configuration.GetConnectionString("DefaultConnection"));
+        _userDao = new UserDao(configuration.GetConnectionString("DefaultConnection"));
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromForm] Credentials creds)
+    public IActionResult Login([FromForm] LoginCredentials creds)
     {
-        string connectionString = Configuration?["ConnectionStrings:DefaultConnection"] ?? "";
-        SqlConnection connection = new SqlConnection(connectionString);
-
-        _logger.Log(LogLevel.Error, $"Creds: {creds.Username} {creds.Password}");
+        return Ok("Success");
+    }
+    
+    [HttpPost("login")]
+    public IActionResult Register([FromForm] RegisterCredentials creds)
+    {
+        if (creds.Password != creds.Password2)
+            return Problem("Password 1 != Password 2");
         
         return Ok("Success");
     }
