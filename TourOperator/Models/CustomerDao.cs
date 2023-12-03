@@ -23,13 +23,7 @@ public class CustomerDao: Dao
         {
             SqlCommand cmd = new SqlCommand(sql, conn);
 
-            cmd.Parameters.Add(new SqlParameter()
-            {
-                ParameterName = @"Username",
-                Value = username,
-                SqlDbType = SqlDbType.VarChar,
-                Size = 32
-            });
+            cmd.Parameters.Add(@"Username", SqlDbType.VarChar).Value = username;
             
             conn.Open();
             
@@ -65,22 +59,9 @@ public class CustomerDao: Dao
         using (var conn = GetConnection())
         {
             SqlCommand cmd = new SqlCommand(sql, conn);
-
-            cmd.Parameters.Add(new SqlParameter()
-            {
-                ParameterName = @"Username",
-                Value = customer.Username,
-                SqlDbType = SqlDbType.VarChar,
-                Size = 32
-            });
             
-            cmd.Parameters.Add(new SqlParameter()
-            {
-                ParameterName = @"Password",
-                Value = customer.Password,
-                SqlDbType = SqlDbType.VarChar,
-                Size = 64
-            });
+            cmd.Parameters.Add(@"Username", SqlDbType.VarChar).Value = customer.Username;
+            cmd.Parameters.Add(@"Password", SqlDbType.VarChar).Value = customer.Password;
             
             conn.Open();
             cmd.ExecuteNonQuery();
