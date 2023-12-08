@@ -11,8 +11,10 @@ public class TourRepository: Repository
             CREATE TABLE Tour (
                 Id INTEGER NOT NULL IDENTITY(1,1) PRIMARY KEY,
                 Spaces INTEGER,
-                Cost INTEGER,
-                Length INTEGER
+                Price INTEGER,
+                Length INTEGER,
+                Name VARCHAR(32),
+                Description VARCHAR(256)
             );
         END;
         ")
