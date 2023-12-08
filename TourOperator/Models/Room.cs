@@ -6,4 +6,5 @@ public class Room
     public int HotelId;
     public string Name;
     public int Price;
+    public int Spaces;
 }

@@ -13,11 +13,11 @@ public class BookingRepository: Repository
                 Username VARCHAR(32) REFERENCES Customer(Username),
                 RoomId INTEGER REFERENCES Room(Id),
                 TourId INTEGER REFERENCES Tour(Id),
-                PackageId INTEGER REFERENCES Package(Id),
                 DateBooked DATE,
                 DateFrom DATE,
                 DateTo DATE,
                 TotalCost INTEGER,
+                PackageDiscount INTEGER,
                 DepositPaid BOOLEAN,
                 Due INTEGER
             );

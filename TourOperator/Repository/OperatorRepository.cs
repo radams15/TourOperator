@@ -12,6 +12,12 @@ public class OperatorRepository: Repository
                 Id INTEGER NOT NULL IDENTITY(1,1) PRIMARY KEY,
                 Name VARCHAR(32)
             );
+
+            INSERT INTO Operator (Name) VALUES ('Hilton');
+            INSERT INTO Operator (Name) VALUES ('Marriott');
+            INSERT INTO Operator (Name) VALUES ('Travelodge');
+            INSERT INTO Operator (Name) VALUES ('Kings');
+            INSERT INTO Operator (Name) VALUES ('Leonardo');
         END;
         ")
     {

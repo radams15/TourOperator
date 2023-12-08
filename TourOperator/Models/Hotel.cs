@@ -6,5 +6,4 @@ public class Hotel
     public int OperatorId;
     public string Name;
     public string Description;
-    public int Spaces;
 }
