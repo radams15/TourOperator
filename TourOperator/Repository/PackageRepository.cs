@@ -16,6 +16,6 @@ public class PackageRepository: Repository
         END;
         ")
     {
-        
+        InitTable();
     }
 }

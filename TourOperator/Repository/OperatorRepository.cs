@@ -15,6 +15,6 @@ public class OperatorRepository: Repository
         END;
         ")
     {
-        
+        InitTable();
     }
 }

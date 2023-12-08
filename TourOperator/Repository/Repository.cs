@@ -20,7 +20,7 @@ public class Repository
                    ?? throw new NullReferenceException("Could not connect to SQL Server!");
     }
     
-    private void InitTable()
+    protected void InitTable()
     {
         using (var conn = GetConnection())
         {

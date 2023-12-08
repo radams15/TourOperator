@@ -1,5 +1,6 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
+using TourOperator.Models;
 
 namespace TourOperator.Repository;
 
@@ -18,6 +19,11 @@ public class TourRepository: Repository
             );
         END;
         ")
+    {
+        InitTable();
+    }
+
+    void AddTour(Tour tour)
     {
         
     }

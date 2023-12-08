@@ -16,7 +16,7 @@ public class RoomRepository: Repository
             );
         END;
         ")
-    {
-        
+    { 
+        InitTable();   
     }
 }

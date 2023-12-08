@@ -19,7 +19,7 @@ public class CustomerRepository: Repository
         END;
         ")
     {
-        
+        InitTable();
     }
 
     public Customer? GetCustomer(string username)

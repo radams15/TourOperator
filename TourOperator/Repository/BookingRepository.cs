@@ -24,6 +24,6 @@ public class BookingRepository: Repository
         END;
         ")
     {
-        
+        InitTable();
     }
 }
