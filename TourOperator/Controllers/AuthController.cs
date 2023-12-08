@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using TourOperator.Models;
+using TourOperator.Repository;
 
 namespace TourOperator.Controllers;
 
@@ -13,6 +14,7 @@ namespace TourOperator.Controllers;
 public class AuthController : ControllerBase
 {
     private CustomerRepository _customerRepository;
+    private BookingRepository _bookingRepository;
     private readonly ILogger<ViewController> _logger;
     private IConfiguration? _configuration;
 
@@ -34,7 +36,12 @@ public class AuthController : ControllerBase
     {
         _logger = logger;
         _configuration = configuration;
-        _customerRepository = new CustomerRepository(configuration.GetConnectionString("DefaultConnection"));
+
+        string sqlConnectionString = _configuration.GetConnectionString("DefaultConnection")
+                                     ?? throw new NullReferenceException("SQL connection string cannot be null");
+        
+        _customerRepository = new CustomerRepository(sqlConnectionString);
+        _bookingRepository = new BookingRepository(sqlConnectionString);
     }
 
     [HttpGet("/logout")]

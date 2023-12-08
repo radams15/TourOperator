@@ -1,14 +1,25 @@
 using System.Data;
 using Microsoft.Data.SqlClient;
+using TourOperator.Models;
 
-namespace TourOperator.Models;
+namespace TourOperator.Repository;
 
 public class CustomerRepository: Repository
 {
     public CustomerRepository(string? connectionString)
-        : base(connectionString)
+        : base(connectionString, @"
+         IF OBJECT_ID(N'dbo.Customer', N'U') IS NULL BEGIN
+            CREATE TABLE Customer (
+                Username VARCHAR(32),
+                FullName VARCHAR(32),
+                PassportNo INTEGER,
+                PhoneNo INTEGER,
+                Password VARCHAR(64)
+            );
+        END;
+        ")
     {
-        InitTable();
+        
     }
 
     public Customer? GetCustomer(string username)
@@ -70,29 +81,4 @@ public class CustomerRepository: Repository
 
         return GetCustomer(customer.Username);
     }
-
-    private void InitTable()
-    {
-        string initString = @"
-         IF OBJECT_ID(N'dbo.Customer', N'U') IS NULL BEGIN
-            CREATE TABLE Customer (
-                Username VARCHAR(32),
-                FullName VARCHAR(32),
-                PassportNo INTEGER,
-                PhoneNo INTEGER,
-                Password VARCHAR(64)
-            );
-        END;
-        ";
-
-        using (var conn = GetConnection())
-        {
-            SqlCommand cmd = new SqlCommand(initString, conn);
-            
-            conn.Open();
-            cmd.ExecuteNonQuery();
-            conn.Close();
-        }
-    }
-    
 }
