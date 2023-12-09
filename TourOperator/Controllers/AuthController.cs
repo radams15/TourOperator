@@ -104,6 +104,8 @@ INVALID_PASSWORD:
         
         _tourDbContext.Customers.Add(customer);
         _tourDbContext.SaveChanges();
+        
+        _logger.LogInformation("User {} created.", customer.Username);
 
         Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Username);
 
