@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using TourOperator.Contexts;
 using TourOperator.Models;
 
 namespace TourOperator.Controllers;
@@ -13,8 +14,7 @@ namespace TourOperator.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly ILogger<ViewController> _logger;
-    private IConfiguration? _configuration;
-
+    private readonly TourDbContext _tourDbContext;
     
     public class LoginCredentials
     {
@@ -29,10 +29,10 @@ public class AuthController : ControllerBase
         public string password2 { get; set; }
     }
 
-    public AuthController(IConfiguration configuration, ILogger<ViewController> logger)
+    public AuthController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
+        _tourDbContext = tourDbContext;
         _logger = logger;
-        _configuration = configuration;
     }
 
     [HttpGet("/logout")]
@@ -46,10 +46,10 @@ public class AuthController : ControllerBase
         return Redirect("/");
     }
 
-    /*[HttpPost("login")]
+    [HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
     {
-        Customer? existing = _customerRepository.GetCustomer(creds.username);
+        Customer? existing = _tourDbContext.Customers.Find(creds.username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
@@ -102,13 +102,16 @@ INVALID_PASSWORD:
             Password = passwordHash
         };
         
-        Customer? createdCustomer = _customerRepository.CreateCustomer(customer);
+        _tourDbContext.Customers.Add(customer);
+        _tourDbContext.SaveChanges();
+
+        Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Username);
 
         if (createdCustomer != null)
             return Ok(createdCustomer);
         
         return Problem("Failed to create customer");
-    }*/
+    }
     
     private static string Sha256(string rawData)
     {

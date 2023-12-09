@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using TourOperator.Contexts;
 using TourOperator.Models;
 
 namespace TourOperator.Controllers;
@@ -11,20 +12,17 @@ namespace TourOperator.Controllers;
 public class ViewController : Controller
 {
     private readonly ILogger<ViewController> _logger;
-    IConfiguration? Configuration { get; }
+    private readonly TourDbContext _tourDbContext;
 
-    public ViewController(IConfiguration _configuration, ILogger<ViewController> logger)
+    public ViewController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
+        _tourDbContext = tourDbContext;
         _logger = logger;
-        Configuration = _configuration;
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        string connectionString = Configuration?["ConnectionStrings:DefaultConnection"] ?? "";
-        SqlConnection connection = new SqlConnection(connectionString);
-
         return View();
     }
     
