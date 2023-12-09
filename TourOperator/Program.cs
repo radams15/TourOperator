@@ -4,12 +4,12 @@ using TourOperator.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<TourDbContext>(opt =>
-{
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-    opt.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-    opt.EnableSensitiveDataLogging();
-});
+builder.Services.AddDbContext<TourDbContext>(opt => opt
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+    .EnableSensitiveDataLogging()
+    .UseLazyLoadingProxies()
+);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -42,6 +43,14 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Customer()
     {
+        return View();
+    }
+    
+    [HttpGet("Hotels")]
+    [Authorize]
+    public IActionResult Hotels()
+    {
+        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}};
         return View();
     }
 
