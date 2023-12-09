@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using TourOperator.Models;
-using TourOperator.Repository;
 
 namespace TourOperator.Controllers;
 
@@ -13,8 +12,6 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
-    private CustomerRepository _customerRepository;
-    private BookingRepository _bookingRepository;
     private readonly ILogger<ViewController> _logger;
     private IConfiguration? _configuration;
 
@@ -36,12 +33,6 @@ public class AuthController : ControllerBase
     {
         _logger = logger;
         _configuration = configuration;
-
-        string sqlConnectionString = _configuration.GetConnectionString("DefaultConnection")
-                                     ?? throw new NullReferenceException("SQL connection string cannot be null");
-        
-        _customerRepository = new CustomerRepository(sqlConnectionString);
-        _bookingRepository = new BookingRepository(sqlConnectionString);
     }
 
     [HttpGet("/logout")]
@@ -55,7 +46,7 @@ public class AuthController : ControllerBase
         return Redirect("/");
     }
 
-    [HttpPost("login")]
+    /*[HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
     {
         Customer? existing = _customerRepository.GetCustomer(creds.username);
@@ -117,7 +108,7 @@ INVALID_PASSWORD:
             return Ok(createdCustomer);
         
         return Problem("Failed to create customer");
-    }
+    }*/
     
     private static string Sha256(string rawData)
     {
