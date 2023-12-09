@@ -16,41 +16,41 @@ public class RoomRepository: Repository
                 Spaces INTEGER
             );
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 375, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 'SINGLE/DOUBLE/TRIPLE', 375, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 775, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 'SINGLE/DOUBLE/TRIPLE', 775, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 950, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Hilton London Hotel'), 'SINGLE/DOUBLE/TRIPLE', 950, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 300, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 'SINGLE/DOUBLE/TRIPLE', 300, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 500, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 'SINGLE/DOUBLE/TRIPLE', 500, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 900, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'London Marriott Hotel'), 'SINGLE/DOUBLE/TRIPLE', 900, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 80, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 'SINGLE/DOUBLE/TRIPLE', 80, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 120, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 'SINGLE/DOUBLE/TRIPLE', 120, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 150, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Travelodge Brighton Seafront'), 'SINGLE/DOUBLE/TRIPLE', 150, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 180, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 180, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 400, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 400, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 520, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Kings Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 520, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 180, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 180, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 400, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 400, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 520, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Leonardo Hotel Brighton'), 'SINGLE/DOUBLE/TRIPLE', 520, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 90, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 'SINGLE/DOUBLE/TRIPLE', 90, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 100, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 'SINGLE/DOUBLE/TRIPLE', 100, 20);
 
-            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 155, 20);
+            INSERT INTO Room (HotelId, Name, Price, Spaces) VALUES ((SELECT Id FROM Hotel WHERE Name = 'Nevis Bank Inn, Fort William'), 'SINGLE/DOUBLE/TRIPLE', 155, 20);
         END;
         ")
     { 

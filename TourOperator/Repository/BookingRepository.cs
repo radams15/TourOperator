@@ -18,7 +18,7 @@ public class BookingRepository: Repository
                 DateTo DATE,
                 TotalCost INTEGER,
                 PackageDiscount INTEGER,
-                DepositPaid BOOLEAN,
+                DepositPaid BIT,
                 Due INTEGER
             );
         END;
