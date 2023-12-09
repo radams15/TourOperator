@@ -2,9 +2,9 @@ namespace TourOperator.Models;
 
 public class Room
 {
-    public int Id;
-    public int HotelId;
-    public string Name;
-    public int Price;
-    public int Spaces;
+    public int Id { get; set; }
+    public int HotelId { get; set; }
+    public string Name { get; set; }
+    public int Price { get; set; }
+    public int Spaces { get; set; }
 }

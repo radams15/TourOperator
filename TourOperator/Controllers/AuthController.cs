@@ -4,8 +4,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using TourOperator.Contexts;
 using TourOperator.Models;
-using TourOperator.Repository;
 
 namespace TourOperator.Controllers;
 
@@ -13,11 +13,8 @@ namespace TourOperator.Controllers;
 [Route("/auth")]
 public class AuthController : ControllerBase
 {
-    private CustomerRepository _customerRepository;
-    private BookingRepository _bookingRepository;
     private readonly ILogger<ViewController> _logger;
-    private IConfiguration? _configuration;
-
+    private readonly TourDbContext _tourDbContext;
     
     public class LoginCredentials
     {
@@ -32,16 +29,10 @@ public class AuthController : ControllerBase
         public string password2 { get; set; }
     }
 
-    public AuthController(IConfiguration configuration, ILogger<ViewController> logger)
+    public AuthController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
+        _tourDbContext = tourDbContext;
         _logger = logger;
-        _configuration = configuration;
-
-        string sqlConnectionString = _configuration.GetConnectionString("DefaultConnection")
-                                     ?? throw new NullReferenceException("SQL connection string cannot be null");
-        
-        _customerRepository = new CustomerRepository(sqlConnectionString);
-        _bookingRepository = new BookingRepository(sqlConnectionString);
     }
 
     [HttpGet("/logout")]
@@ -58,7 +49,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
     {
-        Customer? existing = _customerRepository.GetCustomer(creds.username);
+        Customer? existing = _tourDbContext.Customers.Find(creds.username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
@@ -111,7 +102,12 @@ INVALID_PASSWORD:
             Password = passwordHash
         };
         
-        Customer? createdCustomer = _customerRepository.CreateCustomer(customer);
+        _tourDbContext.Customers.Add(customer);
+        _tourDbContext.SaveChanges();
+        
+        _logger.LogInformation("User {} created.", customer.Username);
+
+        Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Username);
 
         if (createdCustomer != null)
             return Ok(createdCustomer);

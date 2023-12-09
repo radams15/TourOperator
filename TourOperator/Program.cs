@@ -1,8 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using TourOperator.Contexts;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+builder.Services.AddDbContext<TourDbContext>(opt => opt
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+    .EnableSensitiveDataLogging()
+    .UseLazyLoadingProxies()
+);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

@@ -1,9 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System.Collections;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using TourOperator.Contexts;
 using TourOperator.Models;
-using TourOperator.Repository;
 
 namespace TourOperator.Controllers;
 
@@ -12,37 +13,17 @@ namespace TourOperator.Controllers;
 public class ViewController : Controller
 {
     private readonly ILogger<ViewController> _logger;
-    IConfiguration? Configuration { get; }
+    private readonly TourDbContext _tourDbContext;
 
-    private TourRepository _tourRepository;
-    private CustomerRepository _customerRepository;
-    private OperatorRepository _operatorRepository;
-    private HotelRepository _hotelRepository;
-    private RoomRepository _roomRepository;
-    private BookingRepository _bookingRepository;
-
-    public ViewController(IConfiguration _configuration, ILogger<ViewController> logger)
+    public ViewController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
+        _tourDbContext = tourDbContext;
         _logger = logger;
-        Configuration = _configuration;
-        
-        string sqlConnectionString = _configuration.GetConnectionString("DefaultConnection")
-                                     ?? throw new NullReferenceException("SQL connection string cannot be null");
-        
-        _tourRepository = new TourRepository(sqlConnectionString);
-        _customerRepository = new CustomerRepository(sqlConnectionString);
-        _operatorRepository = new OperatorRepository(sqlConnectionString);
-        _hotelRepository = new HotelRepository(sqlConnectionString);
-        _roomRepository = new RoomRepository(sqlConnectionString);
-        _bookingRepository = new BookingRepository(sqlConnectionString);
     }
 
     [HttpGet]
     public IActionResult Index()
     {
-        string connectionString = Configuration?["ConnectionStrings:DefaultConnection"] ?? "";
-        SqlConnection connection = new SqlConnection(connectionString);
-
         return View();
     }
     
@@ -62,6 +43,14 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Customer()
     {
+        return View();
+    }
+    
+    [HttpGet("Hotels")]
+    [Authorize]
+    public IActionResult Hotels()
+    {
+        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}};
         return View();
     }
 
