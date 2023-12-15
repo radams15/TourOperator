@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TourOperator.Contexts;
 using TourOperator.Models;
@@ -36,6 +37,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("/logout")]
+    [Authorize]
     public async Task<ActionResult> Logout()
     {
         _logger.LogInformation("User {} logged out.", User.Identity.Name);
@@ -113,6 +115,49 @@ INVALID_PASSWORD:
             return Ok(createdCustomer);
         
         return Problem("Failed to create customer");
+    }
+
+    private ActionResult AddBasketItem(BasketItem item, string referrer)
+    {
+        _tourDbContext.BasketItems.Add(item);
+        _tourDbContext.SaveChanges();
+        _logger.LogDebug("Basket Item Id: {}", item.Id);
+
+        return Redirect(referrer);
+    }
+    
+    [HttpPost("basket/addRoom")]
+    [Authorize]
+    public ActionResult AddRoom([FromForm] int roomId, [FromForm] string referrer)
+    {
+        Room? room = _tourDbContext.Rooms.Find(roomId);
+        if (room == null)
+            return Problem("Failed to find room");
+
+        BasketItem item = new BasketItem
+        {
+            Username = User.Identity.Name,
+            RoomId = roomId
+        };
+        
+        return AddBasketItem(item, referrer);
+    }
+    
+    [HttpPost("basket/addTour")]
+    [Authorize]
+    public ActionResult AddTour([FromForm] int tourId, [FromForm] string referrer)
+    {
+        Tour? tour = _tourDbContext.Tours.Find(tourId);
+        if (tour == null)
+            return Problem("Failed to find tour");
+
+        BasketItem item = new BasketItem
+        {
+            Username = User.Identity.Name,
+            TourId = tourId
+        };
+
+        return AddBasketItem(item, referrer);
     }
     
     private static string Sha256(string rawData)

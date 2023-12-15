@@ -1,0 +1,51 @@
+﻿@using TourOperator.Contexts
+@using Microsoft.EntityFrameworkCore
+@{
+    ViewData["Title"] = "Basket";
+    TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
+
+    List<Room?> rooms = new();
+    List<Tour?> tours = new();
+    
+    foreach (BasketItem item in _tourDbContext.BasketItems
+        .Where(i => i.Username == User.Identity.Name).ToList())
+    {
+        try
+        {
+            rooms.Add(_tourDbContext.Rooms.Single(r => item.RoomId == r.Id));
+        }
+        catch (Exception e)
+        {
+        }
+        
+        try
+        {
+            tours.Add(_tourDbContext.Tours.Single(t => item.TourId == t.Id));
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
+    rooms.RemoveAll(a => a == null);
+    tours.RemoveAll(a => a == null);
+}
+
+<div class="text-center">
+    <h1 class="display-4">Basket</h1>
+    
+    @foreach (Tour tour in tours)
+    {
+        <div class="basket-item">
+            <p>@tour.Name</p>
+        </div>
+    }
+    
+    @foreach (Room room in rooms)
+    {
+        <div class="basket-item">
+            <p>@room.Name</p>
+            <p>@_tourDbContext.Hotels.Single(h => h.Id == room.HotelId).Name</p>
+        </div>
+    }
+</div>

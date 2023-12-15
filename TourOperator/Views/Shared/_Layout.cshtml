@@ -1,10 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using TourOperator.Contexts
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - TourOperator</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/TourOperator.styles.css" asp-append-version="true"/>
 </head>
@@ -26,7 +28,9 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="View" asp-action="Hotels">Hotels</a>
                     </li>
                 </ul>
+
                 @if(User.Identity.IsAuthenticated) {
+                    <a class="nav-link" asp-area="" asp-controller="View" asp-action="Basket">Basket (@ViewBag.Message["basketCount"]) <i class="bi bi-basket"></i></a>
                     <a class="nav-link text-dark">Logged in as: @User.Identity.Name</a>
                     <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
 
