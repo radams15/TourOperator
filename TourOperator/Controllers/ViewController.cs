@@ -47,10 +47,23 @@ public class ViewController : Controller
     }
     
     [HttpGet("Hotels")]
-    [Authorize]
     public IActionResult Hotels()
     {
         ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}};
+        return View();
+    }
+    
+    [HttpGet("Hotel/{hotelId}")]
+    public IActionResult Hotel(int hotelId)
+    {
+        Hotel? hotel = _tourDbContext.Hotels.Find(hotelId);
+
+        if (hotel == null)
+        {
+            return Problem($"No such hotel: {hotelId}");
+        }
+        
+        ViewBag.Message = new Hashtable{{"hotel", hotel}, {"tourDb", _tourDbContext}};
         return View();
     }
 

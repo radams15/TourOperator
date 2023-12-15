@@ -1,0 +1,20 @@
+﻿@using TourOperator.Contexts
+@using Microsoft.EntityFrameworkCore
+@{
+    ViewData["Title"] = "Hotels";
+    Hotel _hotel = ViewBag.Message["hotel"];
+    TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">@_hotel.Name</h1>
+    
+    @foreach (Room room in _tourDbContext.Rooms
+        .Where(r => r.HotelId == _hotel.Id))
+    {
+        <div class="room-item">
+            <p>@room.Name</p>
+            <p>£@room.Price</p>
+        </div>
+    }
+</div>

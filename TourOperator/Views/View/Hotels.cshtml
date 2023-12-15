@@ -12,14 +12,18 @@
         <div class="hotel-item">
             <h2>@hotel.Name</h2>
             <h3>@hotel.Description</h3>
+            <h3>
+                @(
+                    _tourDbContext.Operators
+                        .Single(o => o.Id == hotel.OperatorId)
+                        .Name
+                )
+            </h3>
             
-            @foreach (Room room in _tourDbContext.Rooms.Where(r => r.HotelId == hotel.Id).ToList())
-            {
-                <div class="room-item">
-                    <p>@room.Name</p>
-                    <p>£@room.Price</p>
-                </div>
-            }
+            <a class="btn btn-secondary nav-link text-dark" asp-area=""
+               asp-controller="View" asp-action="Hotel"
+               asp-route-hotelId="@hotel.Id">More Info</a>
+
         </div>
     }
 </div>
