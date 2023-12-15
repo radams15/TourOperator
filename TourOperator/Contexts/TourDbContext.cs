@@ -11,6 +11,7 @@ public class TourDbContext : DbContext
     public DbSet<Operator> Operators { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Tour> Tours { get; set; }
+    public DbSet<BasketItem> BasketItems { get; set; }
     
     public TourDbContext(DbContextOptions<TourDbContext> options)
         : base(options)
