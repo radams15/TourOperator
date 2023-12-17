@@ -111,7 +111,7 @@ INVALID_PASSWORD:
         _tourDbContext.BasketItems.Add(item);
         _tourDbContext.SaveChanges();
         _logger.LogDebug("Basket Item Id: {}", item.Id);
-
+        
         return Redirect(referrer);
     }
     
@@ -172,9 +172,9 @@ INVALID_PASSWORD:
             byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
 
             StringBuilder builder = new();
-            for (int i = 0; i < bytes.Length; i++)
+            foreach (var b in bytes)
             {
-                builder.Append(bytes[i].ToString("x2"));
+                builder.Append(b.ToString("x2"));
             }
             
             return builder.ToString();
