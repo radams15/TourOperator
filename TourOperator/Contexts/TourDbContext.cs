@@ -22,6 +22,12 @@ public class TourDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Hotel>()
+            .HasMany(h => h.Rooms)
+            .WithOne(r => r.Hotel)
+            .HasForeignKey(r => r.HotelId)
+            .HasPrincipalKey(h => h.Id);
+        
         DbModelCreator.CreateModels(modelBuilder);
     }
 }

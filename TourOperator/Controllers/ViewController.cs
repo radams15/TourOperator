@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
 using TourOperator.Models;
 using TourOperator.Models.Entities;
@@ -86,8 +87,8 @@ public class ViewController : Controller
         return View();
     }
     
-    [HttpGet("Hotels")]
-    public IActionResult HotelsBetweenDates(string from, string to)
+    [HttpGet("HotelsBetweenDates")]
+    public IActionResult HotelsBetweenDates([FromForm] string from, [FromForm] string to)
     {
         ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
         return View("Hotel");
@@ -96,7 +97,9 @@ public class ViewController : Controller
     [HttpGet("Hotel/{hotelId}")]
     public IActionResult Hotel(int hotelId)
     {
-        Hotel? hotel = _tourDbContext.Hotels.Find(hotelId);
+        Hotel? hotel = _tourDbContext.Hotels
+            .Include(h => h.Rooms)
+            .FirstOrDefault(h => h.Id == hotelId);
 
         if (hotel == null)
         {

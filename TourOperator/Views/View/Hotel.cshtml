@@ -10,8 +10,7 @@
 <div class="text-center">
     <h1 class="display-4">@_hotel.Name</h1>
     
-    @foreach (Room room in _tourDbContext.Rooms
-        .Where(r => r.HotelId == _hotel.Id))
+    @foreach (Room room in _hotel.Rooms)
     {
         <div class="room-item">
             <p>@room.Name</p>
