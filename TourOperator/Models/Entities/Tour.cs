@@ -8,4 +8,6 @@ public class Tour
     public int Length { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
+    
+    public IEnumerable<Booking> Bookings { get; set; } = null!;
 }

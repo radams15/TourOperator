@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics;
+using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
@@ -75,25 +76,32 @@ public class ViewController : Controller
     }
     
     [HttpGet("Hotels")]
-    public IActionResult Hotels()
+    public IActionResult Hotels([FromQuery] string? from, [FromQuery] string? to)
     {
-        List<Hotel> hotels = _tourDbContext.Hotels.ToList();
+        IEnumerable<Hotel>? hotels;
+        
+        if (from != null && to != null)
+        {
+            hotels = _availabilitySvc.HotelsBetweenDates(
+                DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+            );
+        }
+        else
+        {
+            hotels = _tourDbContext.Hotels
+                .Include(h => h.Operator);
+        }
+
         ViewBag.Message = new Hashtable
         {
-            {"tourDb", _tourDbContext},
             {"hotels", hotels},
             {"basketCount", BasketCount()}
         };
-        return View();
+        
+        return View(hotels);
     }
-    
-    [HttpGet("HotelsBetweenDates")]
-    public IActionResult HotelsBetweenDates([FromForm] string from, [FromForm] string to)
-    {
-        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
-        return View("Hotel");
-    }
-    
+
     [HttpGet("Hotel/{hotelId}")]
     public IActionResult Hotel(int hotelId)
     {
@@ -106,8 +114,9 @@ public class ViewController : Controller
             return Problem($"No such hotel: {hotelId}");
         }
         
-        ViewBag.Message = new Hashtable{{"hotel", hotel}, {"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
-        return View();
+        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
+        
+        return View(hotel);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

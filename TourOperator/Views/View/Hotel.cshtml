@@ -1,16 +1,17 @@
 ﻿@using TourOperator.Contexts
 @using Microsoft.EntityFrameworkCore
 @using TourOperator.Models.Entities
+
+@model TourOperator.Models.Entities.Hotel
+
 @{
     ViewData["Title"] = "Hotels";
-    Hotel _hotel = ViewBag.Message["hotel"];
-    TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
 }
 
 <div class="text-center">
-    <h1 class="display-4">@_hotel.Name</h1>
+    <h1 class="display-4">@Model.Name</h1>
     
-    @foreach (Room room in _hotel.Rooms)
+    @foreach (Room room in Model.Rooms)
     {
         <div class="room-item">
             <p>@room.Name</p>
@@ -18,7 +19,7 @@
             
             @using (Html.BeginForm("AddRoom", "Auth", FormMethod.Post))
             {
-                <input type="hidden" name="referrer" value="/Hotel/@_hotel.Id"/>
+                <input type="hidden" name="referrer" value="/Hotel/@Model.Id"/>
                 <input type="hidden" name="roomId" value="@room.Id"/>
                 <input type="submit" value="Add To Basket"/>
             }

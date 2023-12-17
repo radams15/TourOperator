@@ -8,4 +8,6 @@ public class Room
     public string Name { get; set; }
     public int Price { get; set; }
     public int Spaces { get; set; }
+
+    public IEnumerable<Booking> Bookings { get; set; } = null!;
 }

@@ -1,31 +1,36 @@
-﻿@using TourOperator.Contexts
-@using Microsoft.EntityFrameworkCore
-@using TourOperator.Models.Entities
+﻿@using TourOperator.Models.Entities
+
+@model IEnumerable<TourOperator.Models.Entities.Hotel>
+
 @{
     ViewData["Title"] = "Hotels";
-    TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
-    List<Hotel> hotels = ViewBag.Message["hotels"];
 }
 
 <div class="text-center">
     <h1 class="display-4">Hotels</h1>
     
-    @foreach(Hotel hotel in hotels) {
-        <div class="hotel-item">
-            <h2>@hotel.Name</h2>
-            <h3>@hotel.Description</h3>
-            <h3>
-                @(
-                    _tourDbContext.Operators
-                        .Single(o => o.Id == hotel.OperatorId)
-                        .Name
-                )
-            </h3>
-            
-            <a class="btn btn-secondary nav-link text-dark" asp-area=""
-               asp-controller="View" asp-action="Hotel"
-               asp-route-hotelId="@hotel.Id">More Info</a>
-
-        </div>
+    @using (Html.BeginForm("Hotels", "View", FormMethod.Get))
+    {
+        <label for="from">From</label>
+        <input type="date" name="from" id="from" class="form-control" />
+        
+        <label for="to">To</label>
+        
+        <input type="date" name="to" id="to" class="form-control" />
+        <input type="submit" value="Search"/>
     }
+    
+    <div class="hotel-list">
+        @foreach(Hotel hotel in Model) {
+            <div class="hotel-item">
+                <h2>@hotel.Name</h2>
+                <h3>@hotel.Description</h3>
+                <h3>@hotel.Operator.Name</h3>
+                
+                <a class="btn btn-secondary nav-link text-dark" asp-area=""
+                   asp-controller="View" asp-action="Hotel"
+                   asp-route-hotelId="@hotel.Id">More Info</a>
+            </div>
+        }
+    </div>
 </div>

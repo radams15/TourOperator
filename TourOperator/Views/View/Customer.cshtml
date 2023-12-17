@@ -1,7 +1,11 @@
-﻿@{
+﻿@model TourOperator.Models.Entities.Customer
+
+@{
     ViewData["Title"] = "Customer";
 }
 
 <div class="text-center">
     <h1 class="display-4">Customer</h1>
+    
+    <h2>@Model.FullName</h2>
 </div>
