@@ -1,37 +1,9 @@
 ﻿@using TourOperator.Contexts
-@using Microsoft.EntityFrameworkCore
+@using TourOperator.Models.Entities
 @{
     ViewData["Title"] = "Basket";
     TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
 
-    List<Room?> rooms = new();
-    List<Tour?> tours = new();
-    
-    foreach (BasketItem item in _tourDbContext.BasketItems
-        .Where(i => i.Username == User.Identity.Name).ToList())
-    {
-        try
-        {
-            rooms.Add(_tourDbContext.Rooms.Single(r => item.RoomId == r.Id));
-        }
-        catch (Exception e)
-        {
-        }
-        
-        try
-        {
-            tours.Add(_tourDbContext.Tours.Single(t => item.TourId == t.Id));
-        }
-        catch (Exception e)
-        {
-        }
-    }
-
-    rooms.RemoveAll(a => a == null);
-    tours.RemoveAll(a => a == null);
-}
-
-@{
     void BasketRemoveForm(BasketItem item)
     {
         @using (Html.BeginForm("RemoveBasket", "Auth", FormMethod.Post))

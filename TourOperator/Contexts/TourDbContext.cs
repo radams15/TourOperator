@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Models;
+using TourOperator.Models.Entities;
 
 namespace TourOperator.Contexts;
 

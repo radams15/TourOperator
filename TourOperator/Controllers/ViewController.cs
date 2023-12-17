@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
 using TourOperator.Contexts;
 using TourOperator.Models;
+using TourOperator.Models.Entities;
+using TourOperator.Models.Services;
 
 namespace TourOperator.Controllers;
 
@@ -16,11 +18,13 @@ public class ViewController : Controller
 {
     private readonly ILogger<ViewController> _logger;
     private readonly TourDbContext _tourDbContext;
+    private readonly AvailabilityService _availabilitySvc;
 
     public ViewController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
         _tourDbContext = tourDbContext;
         _logger = logger;
+        _availabilitySvc = new AvailabilityService(_tourDbContext);
     }
 
     public int BasketCount()
@@ -72,8 +76,21 @@ public class ViewController : Controller
     [HttpGet("Hotels")]
     public IActionResult Hotels()
     {
-        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
+        List<Hotel> hotels = _tourDbContext.Hotels.ToList();
+        ViewBag.Message = new Hashtable
+        {
+            {"tourDb", _tourDbContext},
+            {"hotels", hotels},
+            {"basketCount", BasketCount()}
+        };
         return View();
+    }
+    
+    [HttpGet("Hotels")]
+    public IActionResult HotelsBetweenDates(string from, string to)
+    {
+        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
+        return View("Hotel");
     }
     
     [HttpGet("Hotel/{hotelId}")]

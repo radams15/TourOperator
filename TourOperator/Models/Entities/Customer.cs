@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace TourOperator.Models;
+namespace TourOperator.Models.Entities;
 
 [PrimaryKey("Username")]
 public class Customer

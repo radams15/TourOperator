@@ -1,14 +1,16 @@
 ﻿@using TourOperator.Contexts
 @using Microsoft.EntityFrameworkCore
+@using TourOperator.Models.Entities
 @{
     ViewData["Title"] = "Hotels";
     TourDbContext _tourDbContext = ViewBag.Message["tourDb"];
+    List<Hotel> hotels = ViewBag.Message["hotels"];
 }
 
 <div class="text-center">
     <h1 class="display-4">Hotels</h1>
     
-    @foreach(Hotel hotel in _tourDbContext.Hotels.ToList()) {
+    @foreach(Hotel hotel in hotels) {
         <div class="hotel-item">
             <h2>@hotel.Name</h2>
             <h3>@hotel.Description</h3>

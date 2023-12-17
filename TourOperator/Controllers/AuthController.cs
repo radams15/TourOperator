@@ -8,28 +8,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
 using TourOperator.Models;
+using TourOperator.Models.Entities;
 
 namespace TourOperator.Controllers;
 
 [ApiController]
 [Route("/auth")]
-public class AuthController : ControllerBase
+public class AuthController : Controller
 {
     private readonly ILogger<ViewController> _logger;
     private readonly TourDbContext _tourDbContext;
-    
-    public class LoginCredentials
-    {
-        public string username { get; set; }
-        public string password { get; set; }
-    }
-    
-    public class RegisterCredentials
-    {
-        public string username { get; set; }
-        public string password { get; set; }
-        public string password2 { get; set; }
-    }
 
     public AuthController(TourDbContext tourDbContext, ILogger<ViewController> logger)
     {
@@ -50,14 +38,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login([FromForm] LoginCredentials creds)
+    public async Task<ActionResult> Login([FromForm] string username, [FromForm] string password)
     {
-        Customer? existing = _tourDbContext.Customers.Find(creds.username);
+        Customer? existing = _tourDbContext.Customers.Find(username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
 
-        string attemptHash = Sha256(creds.password);
+        string attemptHash = Sha256(password);
 
         if (existing.Password != attemptHash)
             goto INVALID_PASSWORD;
@@ -87,21 +75,21 @@ public class AuthController : ControllerBase
         return Redirect("/");
         
 INVALID_PASSWORD:
-        _logger.LogInformation("Failed login, User {}.", creds.username);
+        _logger.LogInformation("Failed login, User {}.", username);
         return Problem("Invalid username or password");
     }
     
     [HttpPost("register")]
-    public ActionResult<Customer> Register([FromForm] RegisterCredentials creds)
+    public ActionResult<Customer> Register([FromForm] string username, [FromForm] string password, [FromForm] string password2)
     {
-        if (creds.password != creds.password2)
+        if (password != password2)
             return Problem("Password 1 != Password 2");
 
-        string passwordHash = Sha256(creds.password);
+        string passwordHash = Sha256(password);
         
         Customer customer = new()
         {
-            Username = creds.username,
+            Username = username,
             Password = passwordHash
         };
         

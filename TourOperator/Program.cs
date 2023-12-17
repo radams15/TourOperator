@@ -8,7 +8,7 @@ builder.Services.AddDbContext<TourDbContext>(opt => opt
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
     .EnableSensitiveDataLogging()
-    .UseLazyLoadingProxies()
+    //.UseLazyLoadingProxies()
 );
 
 // Add services to the container.
