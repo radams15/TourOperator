@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
+using TourOperator.Extensions;
 using TourOperator.Models;
 using TourOperator.Models.Entities;
 using TourOperator.Models.Services;
@@ -28,35 +29,22 @@ public class ViewController : Controller
         _logger = logger;
         _availabilitySvc = new AvailabilityService(_tourDbContext);
     }
-
-    public int BasketCount()
-    {
-        if (! User.Identity.IsAuthenticated)
-        {
-            return -1;
-        }
-
-        return _tourDbContext.BasketItems.Count(i => i.Username == User.Identity.Name);
-    }
     
     [HttpGet]
     public IActionResult Index()
     {
-        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
         return View();
     }
     
     [HttpGet("login")]
     public IActionResult Login()
     {
-        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
         return View();
     }
     
     [HttpGet("register")]
     public IActionResult Register()
     {
-        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
         return View();
     }
     
@@ -64,14 +52,6 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Customer()
     {
-        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
-        return View();
-    }
-    
-    [HttpGet("Basket")]
-    public IActionResult Basket()
-    {
-        ViewBag.Message = new Hashtable{{"tourDb", _tourDbContext}, {"basketCount", BasketCount()}};
         return View();
     }
     
@@ -95,8 +75,7 @@ public class ViewController : Controller
 
         ViewBag.Message = new Hashtable
         {
-            {"hotels", hotels},
-            {"basketCount", BasketCount()}
+            {"hotels", hotels}
         };
         
         return View(hotels);
@@ -114,10 +93,23 @@ public class ViewController : Controller
             return Problem($"No such hotel: {hotelId}");
         }
         
-        ViewBag.Message = new Hashtable{{"basketCount", BasketCount()}};
-        
         return View(hotel);
     }
+    
+    [HttpGet("Checkout")]
+    [Authorize]
+    public IActionResult Checkout()
+    {
+        Booking booking = new Booking
+        {
+            Customer = _tourDbContext.Customers.Find(User.Identity!.Name),
+            Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
+            Tour = HttpContext.Session.GetObject<Tour>("PackageTour")
+        };
+        
+        return View(booking);
+    }
+
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [Route("error")]

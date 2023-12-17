@@ -1,6 +1,5 @@
-﻿@using TourOperator.Contexts
-@using Microsoft.EntityFrameworkCore
-@using TourOperator.Models.Entities
+﻿@using TourOperator.Models.Entities
+@using TourOperator.Extensions
 
 @model TourOperator.Models.Entities.Hotel
 
@@ -17,11 +16,17 @@
             <p>@room.Name</p>
             <p>£@room.Price</p>
             
-            @using (Html.BeginForm("AddRoom", "Auth", FormMethod.Post))
+            @if (User.Identity!.IsAuthenticated)
             {
-                <input type="hidden" name="referrer" value="/Hotel/@Model.Id"/>
-                <input type="hidden" name="roomId" value="@room.Id"/>
-                <input type="submit" value="Add To Basket"/>
+                if (Context.Session.GetObject<Room>("PackageRoom")?.Id == room.Id)
+                {
+                    <i class="bi bi-bag-check"></i>
+                }
+                using (Html.BeginForm("AddRoomToPackage", "Auth", FormMethod.Post))
+                {
+                    <input type="hidden" name="roomId" value="@room.Id"/>
+                    <input type="submit" value="Add To Package"/>
+                }
             }
         </div>
     }

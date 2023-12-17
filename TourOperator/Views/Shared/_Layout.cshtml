@@ -1,4 +1,5 @@
 ﻿@using TourOperator.Contexts
+@using Microsoft.AspNetCore.Http
 @using TourOperator.Models.Entities
 <!DOCTYPE html>
 <html lang="en">
@@ -30,9 +31,9 @@
                     </li>
                 </ul>
 
-                @if(User.Identity.IsAuthenticated) {
-                    <a class="nav-link" asp-area="" asp-controller="View" asp-action="Basket">Basket (@ViewBag.Message["basketCount"]) <i class="bi bi-basket"></i></a>
-                    <a class="nav-link text-dark">Logged in as: @User.Identity.Name</a>
+                @if(User.Identity!.IsAuthenticated) {
+                    <a class="nav-link text-dark" asp-area="" asp-controller="View" asp-action="Checkout">Checkout <i class="bi bi-basket"></i></a>
+                    <a class="nav-link text-dark">Logged in as: @User.Identity!.Name</a>
                     <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
 
                     @if (User.IsInRole(RoleName.Manager))

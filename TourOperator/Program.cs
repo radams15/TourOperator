@@ -13,7 +13,7 @@ builder.Services.AddDbContext<TourDbContext>(opt => opt
 
 builder.Services.AddSession(opt =>
 {
-    opt.IdleTimeout = TimeSpan.FromSeconds(10);
+    opt.IdleTimeout = TimeSpan.FromMinutes(30);
     opt.Cookie.IsEssential = true;
 });
 

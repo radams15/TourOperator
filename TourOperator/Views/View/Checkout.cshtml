@@ -1,0 +1,40 @@
+﻿@using TourOperator.Models.Entities
+@model TourOperator.Models.Entities.Booking
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Checkout</h1>
+    
+    <div class="checkout">
+        
+        <table>
+            <tr>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Cost</th>
+            </tr>
+            
+            <tr>
+                <td>Hotel Room</td>
+                <td>@Model.Room?.Name</td>
+                <td>@Model.Room?.Price</td>
+            </tr>
+            
+            <tr>
+                <td>Tour</td>
+                <td>@Model.Tour?.Name</td>
+                <td>£@Model.Tour?.Price/1000</td>
+            </tr>
+            
+            <tr>
+                <td>Total</td>
+                <td></td>
+                <td>@Model.Due/1000</td>
+            </tr>
+        </table>
+        
+    </div>
+</div>

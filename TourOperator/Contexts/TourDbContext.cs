@@ -12,7 +12,6 @@ public class TourDbContext : DbContext
     public DbSet<Operator> Operators { get; set; }
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Tour> Tours { get; set; }
-    public DbSet<BasketItem> BasketItems { get; set; }
     
     public TourDbContext(DbContextOptions<TourDbContext> options)
         : base(options)
@@ -22,12 +21,6 @@ public class TourDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        /*modelBuilder.Entity<Room>()
-            .HasMany(h => h.Bookings)
-            .WithOne(r => r.Hotel)
-            .HasForeignKey(r => r.HotelId)
-            .HasPrincipalKey(h => h.Id);*/
-        
         DbModelCreator.CreateModels(modelBuilder);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
+using TourOperator.Extensions;
 using TourOperator.Models;
 using TourOperator.Models.Entities;
 
@@ -106,64 +107,21 @@ INVALID_PASSWORD:
         return Problem("Failed to create customer");
     }
 
-    private ActionResult AddBasketItem(BasketItem item, string referrer)
-    {
-        _tourDbContext.BasketItems.Add(item);
-        _tourDbContext.SaveChanges();
-        _logger.LogDebug("Basket Item Id: {}", item.Id);
-        
-        return Redirect(referrer);
-    }
-    
-    [HttpPost("basket/addRoom")]
+
+    [HttpPost("room/addToPackage")]
     [Authorize]
-    public ActionResult AddRoom([FromForm] int roomId, [FromForm] string referrer)
+    public ActionResult AddRoomToPackage([FromForm] int roomId)
     {
         Room? room = _tourDbContext.Rooms.Find(roomId);
+
         if (room == null)
-            return Problem("Failed to find room");
-
-        BasketItem item = new BasketItem
-        {
-            Username = User.Identity.Name,
-            RoomId = roomId
-        };
+            return Problem($"Could not find room {roomId}");
         
-        return AddBasketItem(item, referrer);
+        HttpContext.Session.SetObject("PackageRoom", room);
+        
+        return Redirect($"/Hotel/{room.HotelId}");
     }
     
-    [HttpPost("basket/removeBasket")]
-    [Authorize]
-    public ActionResult RemoveBasket([FromForm] int basketId, [FromForm] string referrer)
-    {
-        BasketItem? item = _tourDbContext.BasketItems.Find(basketId);
-
-        if (item == null)
-            return Problem($"Cannot find item {basketId}");
-        
-        _tourDbContext.BasketItems.Remove(item);
-        
-        _tourDbContext.SaveChanges();
-        
-        return Redirect(referrer);
-    }
-    
-    [HttpPost("basket/addTour")]
-    [Authorize]
-    public ActionResult AddTour([FromForm] int tourId, [FromForm] string referrer)
-    {
-        Tour? tour = _tourDbContext.Tours.Find(tourId);
-        if (tour == null)
-            return Problem("Failed to find tour");
-
-        BasketItem item = new BasketItem
-        {
-            Username = User.Identity.Name,
-            TourId = tourId
-        };
-
-        return AddBasketItem(item, referrer);
-    }
     
     private static string Sha256(string rawData)
     {
