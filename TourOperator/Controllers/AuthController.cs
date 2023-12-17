@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
 using TourOperator.Models;
 
@@ -141,6 +142,22 @@ INVALID_PASSWORD:
         };
         
         return AddBasketItem(item, referrer);
+    }
+    
+    [HttpPost("basket/removeBasket")]
+    [Authorize]
+    public ActionResult RemoveBasket([FromForm] int basketId, [FromForm] string referrer)
+    {
+        BasketItem? item = _tourDbContext.BasketItems.Find(basketId);
+
+        if (item == null)
+            return Problem($"Cannot find item {basketId}");
+        
+        _tourDbContext.BasketItems.Remove(item);
+        
+        _tourDbContext.SaveChanges();
+        
+        return Redirect(referrer);
     }
     
     [HttpPost("basket/addTour")]

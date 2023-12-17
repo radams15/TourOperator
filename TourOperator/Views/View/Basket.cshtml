@@ -31,21 +31,49 @@
     tours.RemoveAll(a => a == null);
 }
 
+@{
+    void BasketRemoveForm(BasketItem item)
+    {
+        @using (Html.BeginForm("RemoveBasket", "Auth", FormMethod.Post))
+        {
+            <input type="hidden" name="referrer" value="/Basket"/>
+            <input type="hidden" name="basketId" value="@item.Id"/>
+            <input type="submit" value="Remove"/>
+        }
+    }
+}
+
 <div class="text-center">
     <h1 class="display-4">Basket</h1>
-    
-    @foreach (Tour tour in tours)
-    {
-        <div class="basket-item">
-            <p>@tour.Name</p>
-        </div>
-    }
-    
-    @foreach (Room room in rooms)
-    {
-        <div class="basket-item">
-            <p>@room.Name</p>
-            <p>@_tourDbContext.Hotels.Single(h => h.Id == room.HotelId).Name</p>
-        </div>
-    }
+        @foreach (BasketItem item in _tourDbContext.BasketItems
+            .Where(i => i.Username == User.Identity.Name).ToList())
+        {
+            @if (item.RoomId != 0)
+            {
+                Room room = _tourDbContext.Rooms.Single(r => item.RoomId == r.Id);
+                
+                <div class="basket-item">
+                    <p>Room: @room.Name</p>
+                    <p>@_tourDbContext.Hotels.Single(h => h.Id == room.HotelId).Name</p>
+
+                    @{
+                        BasketRemoveForm(item);
+                    }
+
+                </div>
+            }
+            else if (item.TourId != 0)
+            {
+                Tour tour = _tourDbContext.Tours.Single(t => item.TourId == t.Id);
+
+                <div class="basket-item">
+                    <p>Tour: @tour.Name</p>
+
+                    @{
+                        BasketRemoveForm(item);
+                    }
+
+                </div>
+            }
+        }
 </div>
