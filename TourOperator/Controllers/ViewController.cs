@@ -55,31 +55,31 @@ public class ViewController : Controller
         return View();
     }
     
-    [HttpGet("HotelSearch")]
+    [HttpGet("Hotels")]
     public IActionResult HotelSearch()
     {
-        return View();
+        return View("HotelSearch");
     }
     
-    [HttpGet("Hotels")]
-    public IActionResult Hotels([FromQuery] string? from, [FromQuery] string? to)
+    [HttpPost("Hotels")]
+    public IActionResult Hotels([FromForm] string? from, [FromForm] string? to)
     {
         if (from == null || to == null)
         {
             return Problem("FromDate and ToDate must be specified");
         }
-        
+
         ViewBag.Message = new Hashtable
         {
             { "fromDate", from },
             { "toDate", to }
         };
-        
+
         IEnumerable<Hotel> hotels = _availabilitySvc.HotelsBetweenDates(
             DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
             DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture)
         );
-        
+
         return View(hotels);
     }
 

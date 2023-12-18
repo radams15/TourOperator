@@ -1,18 +1,19 @@
 ﻿@{
     ViewData["Title"] = "Hotel Search";
+    string dateNow = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
 <div class="text-center">
     <h1 class="display-4">Hotel Search</h1>
     
-    @using (Html.BeginForm("Hotels", "View", FormMethod.Get))
+    @using (Html.BeginForm("Hotels", "View", FormMethod.Post))
     {
         <label for="from">From</label>
-        <input type="date" name="from" id="from" class="form-control" />
+        <input type="date" name="from" id="from" class="form-control" value="@dateNow" min="@dateNow"/>
         
         <label for="to">To</label>
-        
-        <input type="date" name="to" id="to" class="form-control" />
-        <input type="submit" value="Search"/>
+        <input type="date" name="to" id="to" class="form-control" value="@dateNow" min="@dateNow" />
+                                                                 
+        <button type="submit" class="btn btn-primary">Submit</button>
     }
 </div>
