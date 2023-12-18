@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
-using TourOperator.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<TourDbContext>(opt => opt
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+    //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
     .EnableSensitiveDataLogging()
 );
 

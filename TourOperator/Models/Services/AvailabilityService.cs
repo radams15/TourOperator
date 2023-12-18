@@ -17,22 +17,23 @@ public class AvailabilityService
     {
         return start1 < end2 && start2 < end1;
     }
+
+    public int RoomCountBetweenDates(Room room, DateTime from, DateTime to)
+    {
+        return room.Spaces - _tourDbContext.Entry(room)
+            .Collection(r => r.Bookings)
+            .Query()
+            .ToList()
+            .Count(b => DatesOverlap(from, to, b.DateFrom,
+                b.DateTo));
+    }
     
     public IEnumerable<Room> RoomsBetweenDates(Hotel hotel, DateTime from, DateTime to)
     {
         return hotel.Rooms
             .Where(
-                r =>
-                        {
-                            int count = r.Bookings.Count(b =>
-                                DatesOverlap(from, to, b.RoomBooking?.DateFrom, b.RoomBooking?.DateTo)
-                            );
-
-                            Console.WriteLine($"{r.Name}: {count} booked, {r.Spaces} spaces.");
-                            
-                            return count < r.Spaces;
-                        }
-                );
+                r => RoomCountBetweenDates(r, from, to) > 0
+            );
     }
 
     public IEnumerable<Hotel> HotelsBetweenDates(DateTime from, DateTime to)

@@ -8,10 +8,7 @@ public class Booking
     public string? Username { get; set; } = "";
     public Customer? Customer { get; set; }
     
-    public int? RoomBookingId { get; set; }
     public RoomBooking? RoomBooking { get; set; }
-    
-    public int? TourBookingId { get; set; }
     public TourBooking? TourBooking { get; set; }
     
     public DateTime DateBooked { get; set; }

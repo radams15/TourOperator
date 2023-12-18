@@ -11,7 +11,7 @@ public class Room
     public int Price { get; set; }
     public int Spaces { get; set; }
 
-    public IEnumerable<Booking> Bookings { get; set; } = null!;
+    public IEnumerable<RoomBooking>? Bookings { get; set; }
 
     [NotMapped]
     public DateTime FromDate { get; set; }

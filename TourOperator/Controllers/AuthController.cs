@@ -118,8 +118,8 @@ INVALID_PASSWORD:
         if (room == null)
             return Problem($"Could not find room {roomId}");
         
-        room.FromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-        room.ToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        room.FromDate = fromDate.ParseDate();
+        room.ToDate = toDate.ParseDate();
 
         HttpContext.Session.SetObject("PackageRoom", room);
         

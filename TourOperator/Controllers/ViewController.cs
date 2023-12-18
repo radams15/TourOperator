@@ -76,8 +76,8 @@ public class ViewController : Controller
         };
 
         IEnumerable<Hotel> hotels = _availabilitySvc.HotelsBetweenDates(
-            DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-            DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+            from.ParseDate(),
+            to.ParseDate()
         );
 
         return View(hotels);
@@ -88,12 +88,17 @@ public class ViewController : Controller
     {
         Hotel? hotel = _tourDbContext.Hotels
             .Include(h => h.Rooms)
+                .ThenInclude(r => r.Bookings)
             .FirstOrDefault(h => h.Id == hotelId);
 
         if (hotel == null )
         {
             return Problem($"No such hotel: {hotelId}");
         }
+        
+        hotel.Rooms = _availabilitySvc
+            .RoomsBetweenDates(hotel, fromDate.ParseDate(), toDate.ParseDate())
+            .ToList();
         
         ViewBag.Message = new Hashtable
         {

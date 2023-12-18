@@ -1,6 +1,7 @@
-﻿@{
+﻿@using TourOperator.Extensions
+@{
     ViewData["Title"] = "Hotel Search";
-    string dateNow = DateTime.Now.ToString("yyyy-MM-dd");
+    string dateNow = DateTime.Now.ToShortDate();
 }
 
 <div class="text-center">

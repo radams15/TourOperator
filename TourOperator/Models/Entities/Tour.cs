@@ -9,5 +9,5 @@ public class Tour
     public string Name { get; set; }
     public string Description { get; set; }
     
-    public IEnumerable<Booking> Bookings { get; set; } = null!;
+    public IEnumerable<TourBooking>? Bookings { get; set; }
 }
