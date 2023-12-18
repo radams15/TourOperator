@@ -15,12 +15,14 @@
                 <th>Type</th>
                 <th>Name</th>
                 <th>Cost</th>
+                <th>Dates</th>
             </tr>
             
             <tr>
                 <td>Hotel Room</td>
-                <td>@Model.Room?.Name</td>
+                <td>@Model.Room?.Name @@ @Model.Room?.Hotel.Name</td>
                 <td>@Model.Room?.Price</td>
+                <td>@Model.Room?.FromDate To @Model.Room?.ToDate</td>
             </tr>
             
             <tr>

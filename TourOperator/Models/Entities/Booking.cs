@@ -12,8 +12,6 @@ public class Booking
     public Tour? Tour { get; set; } = null!;
     
     public DateTime DateBooked { get; set; }
-    public DateTime DateFrom { get; set; }
-    public DateTime DateTo { get; set; }
     public int TotalCost { get; set; }
     public bool DepositPaid { get; set; }
     public int Due { get; set; }

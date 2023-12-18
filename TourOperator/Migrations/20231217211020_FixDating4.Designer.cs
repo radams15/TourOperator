@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TourOperator.Contexts;
 
@@ -11,9 +12,11 @@ using TourOperator.Contexts;
 namespace TourOperator.Migrations
 {
     [DbContext(typeof(TourDbContext))]
-    partial class TourDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231217211020_FixDating4")]
+    partial class FixDating4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,6 +219,9 @@ namespace TourOperator.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("FromDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
 
@@ -229,6 +235,9 @@ namespace TourOperator.Migrations
                     b.Property<int>("Spaces")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("ToDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("HotelId");
@@ -239,146 +248,182 @@ namespace TourOperator.Migrations
                         new
                         {
                             Id = 1,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 1,
                             Name = "Single Bed",
                             Price = 8000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 2,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 1,
                             Name = "Double Bed",
                             Price = 12000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 3,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 1,
                             Name = "Family Suite",
                             Price = 15000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 4,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 2,
                             Name = "Single Bed",
                             Price = 30000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 5,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 2,
                             Name = "Double Bed",
                             Price = 50000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 6,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 2,
                             Name = "Family Suite",
                             Price = 90000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 7,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 3,
                             Name = "Single Bed",
                             Price = 18000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 8,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 3,
                             Name = "Double Bed",
                             Price = 40000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 9,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 3,
                             Name = "Family Suite",
                             Price = 52000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 10,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 4,
                             Name = "Single Bed",
                             Price = 18000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 11,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 4,
                             Name = "Double Bed",
                             Price = 40000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 12,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 4,
                             Name = "Family Suite",
                             Price = 52000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 13,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 5,
                             Name = "Single Bed",
                             Price = 9000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 14,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 5,
                             Name = "Double Bed",
                             Price = 10000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 15,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 5,
                             Name = "Family Suite",
                             Price = 15500,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 16,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 6,
                             Name = "Single Bed",
                             Price = 37500,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 17,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 6,
                             Name = "Double Bed",
                             Price = 77500,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
                             Id = 18,
+                            FromDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             HotelId = 6,
                             Name = "Family Suite",
                             Price = 95000,
-                            Spaces = 20
+                            Spaces = 20,
+                            ToDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 

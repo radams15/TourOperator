@@ -5,6 +5,8 @@
 
 @{
     ViewData["Title"] = "Hotels";
+    string fromDate = ViewBag.Message["fromDate"];
+    string toDate = ViewBag.Message["toDate"];
 }
 
 <div class="text-center">
@@ -15,6 +17,7 @@
         <div class="room-item">
             <p>@room.Name</p>
             <p>£@room.Price</p>
+            <p>@fromDate To @toDate</p>
             
             @if (User.Identity!.IsAuthenticated)
             {
@@ -24,6 +27,8 @@
                 }
                 using (Html.BeginForm("AddRoomToPackage", "Auth", FormMethod.Post))
                 {
+                    <input type="hidden" name="fromDate" value="@fromDate"/>
+                    <input type="hidden" name="toDate" value="@toDate"/>
                     <input type="hidden" name="roomId" value="@room.Id"/>
                     <input type="submit" value="Add To Package"/>
                 }

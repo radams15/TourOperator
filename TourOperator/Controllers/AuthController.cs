@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.Globalization;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Authentication;
@@ -46,7 +47,7 @@ public class AuthController : Controller
         if (existing == null)
             goto INVALID_PASSWORD;
 
-        string attemptHash = Sha256(password);
+        string attemptHash = password.Sha256();
 
         if (existing.Password != attemptHash)
             goto INVALID_PASSWORD;
@@ -86,7 +87,7 @@ INVALID_PASSWORD:
         if (password != password2)
             return Problem("Password 1 != Password 2");
 
-        string passwordHash = Sha256(password);
+        string passwordHash = password.Sha256();
         
         Customer customer = new()
         {
@@ -110,33 +111,18 @@ INVALID_PASSWORD:
 
     [HttpPost("room/addToPackage")]
     [Authorize]
-    public ActionResult AddRoomToPackage([FromForm] int roomId)
+    public ActionResult AddRoomToPackage([FromForm] int roomId, [FromForm] string fromDate, [FromForm] string toDate)
     {
         Room? room = _tourDbContext.Rooms.Find(roomId);
-
+        
         if (room == null)
             return Problem($"Could not find room {roomId}");
         
+        room.FromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        room.ToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+
         HttpContext.Session.SetObject("PackageRoom", room);
         
-        return Redirect($"/Hotel/{room.HotelId}");
+        return Redirect($"/Hotel/{room.HotelId}?fromDate={fromDate}&toDate={toDate}");
     }
-    
-    
-    private static string Sha256(string rawData)
-    {
-        using (SHA256 sha256Hash = SHA256.Create())
-        {
-            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));
-
-            StringBuilder builder = new();
-            foreach (var b in bytes)
-            {
-                builder.Append(b.ToString("x2"));
-            }
-            
-            return builder.ToString();
-        }
-    }
-
 }

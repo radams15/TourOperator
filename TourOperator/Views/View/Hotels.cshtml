@@ -4,21 +4,12 @@
 
 @{
     ViewData["Title"] = "Hotels";
+    string fromDate = ViewBag.Message["fromDate"];
+    string toDate = ViewBag.Message["toDate"];
 }
 
 <div class="text-center">
     <h1 class="display-4">Hotels</h1>
-    
-    @using (Html.BeginForm("Hotels", "View", FormMethod.Get))
-    {
-        <label for="from">From</label>
-        <input type="date" name="from" id="from" class="form-control" />
-        
-        <label for="to">To</label>
-        
-        <input type="date" name="to" id="to" class="form-control" />
-        <input type="submit" value="Search"/>
-    }
     
     <div class="hotel-list">
         @foreach(Hotel hotel in Model) {
@@ -29,7 +20,9 @@
                 
                 <a class="btn btn-secondary nav-link text-dark" asp-area=""
                    asp-controller="View" asp-action="Hotel"
-                   asp-route-hotelId="@hotel.Id">More Info</a>
+                   asp-route-hotelId="@hotel.Id"
+                   asp-route-fromDate="@fromDate"
+                   asp-route-toDate="@toDate">More Info</a>
             </div>
         }
     </div>

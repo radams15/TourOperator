@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
+using TourOperator.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,7 +9,6 @@ builder.Services.AddDbContext<TourDbContext>(opt => opt
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
     .EnableSensitiveDataLogging()
-    //.UseLazyLoadingProxies()
 );
 
 builder.Services.AddSession(opt =>
@@ -18,7 +18,8 @@ builder.Services.AddSession(opt =>
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services
+    .AddControllersWithViews();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

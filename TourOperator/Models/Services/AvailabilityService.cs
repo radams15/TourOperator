@@ -13,7 +13,7 @@ public class AvailabilityService
         _tourDbContext = tourDbContext;
     }
 
-    private static bool DatesOverlap(DateTime start1, DateTime end1, DateTime start2, DateTime end2)
+    private static bool DatesOverlap(DateTime? start1, DateTime? end1, DateTime? start2, DateTime? end2)
     {
         return start1 < end2 && start2 < end1;
     }
@@ -23,7 +23,7 @@ public class AvailabilityService
         return hotel.Rooms
             .Where(
                 r => ! r.Bookings.Any(
-                    b => DatesOverlap(from, to, b.DateFrom, b.DateTo)
+                    b => DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
                 )
             )
             .ToList();
@@ -34,30 +34,16 @@ public class AvailabilityService
         IEnumerable<Hotel> allHotels = _tourDbContext.Hotels
             .Include(h => h.Operator)
             .Include(h => h.Rooms)
-            .ThenInclude(r => r.Bookings);
+                .ThenInclude(r => r.Bookings)
+                    .ThenInclude(b => b.Room);
 
         foreach(Hotel h in allHotels)
         {
             h.Rooms = h.Rooms.Where(r => r.Bookings.Any(
-                b => DatesOverlap(from, to, b.DateFrom, b.DateTo)
+                b => DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
             )).ToList();
         }
 
         return allHotels.Where(h => h.Rooms.Count > 0);
     }
-    
-    /*
-     public List<Hotel> HotelsBetweenDates(DateTime from, DateTime to)
-       {
-       List<Hotel> allHotels = _tourDbContext.Hotels
-       .Include(h => h.Operator)
-       .Include(h => h.Rooms)
-       .ThenInclude(r => r.Bookings)
-       .ToList();
-       
-       return allHotels.Where(
-       h => RoomsBetweenDates(h, from, to).Count > 0
-       ).ToList();
-       }
-     */
 }

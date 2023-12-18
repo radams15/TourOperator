@@ -55,44 +55,52 @@ public class ViewController : Controller
         return View();
     }
     
+    [HttpGet("HotelSearch")]
+    public IActionResult HotelSearch()
+    {
+        return View();
+    }
+    
     [HttpGet("Hotels")]
     public IActionResult Hotels([FromQuery] string? from, [FromQuery] string? to)
     {
-        IEnumerable<Hotel>? hotels;
+        if (from == null || to == null)
+        {
+            return Problem("FromDate and ToDate must be specified");
+        }
         
-        if (from != null && to != null)
-        {
-            hotels = _availabilitySvc.HotelsBetweenDates(
-                DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-                DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture)
-            );
-        }
-        else
-        {
-            hotels = _tourDbContext.Hotels
-                .Include(h => h.Operator);
-        }
-
         ViewBag.Message = new Hashtable
         {
-            {"hotels", hotels}
+            { "fromDate", from },
+            { "toDate", to }
         };
+        
+        IEnumerable<Hotel> hotels = _availabilitySvc.HotelsBetweenDates(
+            DateTime.ParseExact(from, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+            DateTime.ParseExact(to, "yyyy-MM-dd", CultureInfo.InvariantCulture)
+        );
         
         return View(hotels);
     }
 
     [HttpGet("Hotel/{hotelId}")]
-    public IActionResult Hotel(int hotelId)
+    public IActionResult Hotel(int hotelId, [FromQuery] string fromDate, [FromQuery] string toDate)
     {
         Hotel? hotel = _tourDbContext.Hotels
             .Include(h => h.Rooms)
             .FirstOrDefault(h => h.Id == hotelId);
 
-        if (hotel == null)
+        if (hotel == null )
         {
             return Problem($"No such hotel: {hotelId}");
         }
         
+        ViewBag.Message = new Hashtable
+        {
+            { "fromDate", fromDate },
+            { "toDate", toDate }
+        };
+
         return View(hotel);
     }
     
@@ -104,7 +112,7 @@ public class ViewController : Controller
         {
             Customer = _tourDbContext.Customers.Find(User.Identity!.Name),
             Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
-            Tour = HttpContext.Session.GetObject<Tour>("PackageTour")
+            Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
         };
         
         return View(booking);

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace TourOperator.Models.Entities;
 
 public class Room
@@ -10,4 +12,9 @@ public class Room
     public int Spaces { get; set; }
 
     public IEnumerable<Booking> Bookings { get; set; } = null!;
+
+    [NotMapped]
+    public DateTime FromDate { get; set; }
+    [NotMapped]
+    public DateTime ToDate { get; set; }
 }

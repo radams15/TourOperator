@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "Hotel Search";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Hotel Search</h1>
+    
+    @using (Html.BeginForm("Hotels", "View", FormMethod.Get))
+    {
+        <label for="from">From</label>
+        <input type="date" name="from" id="from" class="form-control" />
+        
+        <label for="to">To</label>
+        
+        <input type="date" name="to" id="to" class="form-control" />
+        <input type="submit" value="Search"/>
+    }
+</div>
