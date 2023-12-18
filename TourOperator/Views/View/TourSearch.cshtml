@@ -1,0 +1,17 @@
+﻿@using TourOperator.Extensions
+@{
+    ViewData["Title"] = "Hotel Search";
+    string dateNow = DateTime.Now.ToShortDate();
+}
+
+<div class="text-center">
+    <h1 class="display-4">Hotel Search</h1>
+    
+    @using (Html.BeginForm("Tours", "View", FormMethod.Post))
+    {
+        <label for="from">From</label>
+        <input type="date" name="from" id="from" class="form-control" value="@dateNow" min="@dateNow"/>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+</div>

@@ -117,12 +117,27 @@ INVALID_PASSWORD:
         
         if (room == null)
             return Problem($"Could not find room {roomId}");
-        
-        room.FromDate = fromDate.ParseDate();
-        room.ToDate = toDate.ParseDate();
+
+        HttpContext.Session.SetObject("RoomDateTo", toDate.ParseDate());
+        HttpContext.Session.SetObject("RoomDateFrom", fromDate.ParseDate());
 
         HttpContext.Session.SetObject("PackageRoom", room);
         
         return Redirect($"/Hotel/{room.HotelId}?fromDate={fromDate}&toDate={toDate}");
+    }
+    
+    [HttpPost("tour/addToPackage")]
+    [Authorize]
+    public ActionResult AddTourToPackage([FromForm] int tourId, [FromForm] string fromDate)
+    {
+        Tour? tour = _tourDbContext.Tours.Find(tourId);
+        
+        if (tour == null)
+            return Problem($"Could not find tour {tourId}");
+        
+        HttpContext.Session.SetObject("PackageTour", tour);
+        HttpContext.Session.SetObject("RoomDateFrom", fromDate.ParseDate());
+        
+        return Redirect($"/Tour/{tour.Id}?fromDate={fromDate}");
     }
 }

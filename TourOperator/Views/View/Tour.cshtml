@@ -1,0 +1,33 @@
+﻿@using TourOperator.Models.Entities
+@using TourOperator.Extensions
+
+@model TourOperator.Models.Entities.Tour
+
+@{
+    ViewData["Title"] = "Hotels";
+    string fromDate = ViewBag.Message["fromDate"];
+}
+
+<div class="text-center">
+    <h1 class="display-4">@Model.Name</h1>
+    
+    <div class="room-item">
+        <p>@Model.Name</p>
+        <p>£@(Model.Price/100)</p>
+        <p>@fromDate (@Model.Length Days)</p>
+        
+        @if (User.Identity!.IsAuthenticated)
+        {
+            if (Context.Session.GetObject<Tour>("PackageTour")?.Id == Model.Id)
+            {
+                <i class="bi bi-bag-check"></i>
+            }
+            using (Html.BeginForm("AddTourToPackage", "Auth", FormMethod.Post))
+            {
+                <input type="hidden" name="fromDate" value="@fromDate"/>
+                <input type="hidden" name="tourId" value="@Model.Id"/>
+                <input type="submit" class="btn btn-primary" value="Add To Package"/>
+            }
+        }
+    </div>
+</div>

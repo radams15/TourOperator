@@ -1,4 +1,4 @@
-﻿@using TourOperator.Models.Entities
+﻿@using TourOperator.Extensions
 @model TourOperator.Models.Entities.Booking
 
 @{
@@ -20,21 +20,23 @@
             
             <tr>
                 <td>Hotel Room</td>
-                <td>@Model.RoomBooking?.Room?.Name @@ @Model.RoomBooking?.Room?.Hotel.Name</td>
-                <td>@Model.RoomBooking?.Room?.Price</td>
-                <td>@Model.RoomBooking?.Room?.FromDate To @Model.RoomBooking?.Room?.ToDate</td>
+                <td>@Model.RoomBooking?.Room?.Name</td>
+                <td>£@((Model.RoomBooking?.Room?.Price*Model.RoomBooking?.DateTo.Subtract(Model.RoomBooking.DateFrom).Days)/100)</td>
+                <td>@Model.RoomBooking?.DateFrom.ToShortDate() To @Model.RoomBooking?.DateTo.ToShortDate()</td>
             </tr>
             
             <tr>
                 <td>Tour</td>
                 <td>@Model.TourBooking?.Tour?.Name</td>
-                <td>£@Model.TourBooking?.Tour?.Price/100</td>
+                <td>£@(Model.TourBooking?.Tour?.Price/100)</td>
+                <td>@Model.TourBooking?.DateFrom.ToShortDate() (@Model.TourBooking?.Tour?.Length Days)</td>
             </tr>
             
-            <tr>
+            <tr id="checkout-total">
                 <td>Total</td>
                 <td></td>
-                <td>@Model.Due/100</td>
+                <td>£@(Model.TotalCost/100)</td>
+                <td></td>
             </tr>
         </table>
         

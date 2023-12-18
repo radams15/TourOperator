@@ -61,6 +61,12 @@ public class ViewController : Controller
         return View("HotelSearch");
     }
     
+    [HttpGet("Tours")]
+    public IActionResult TourSearch()
+    {
+        return View("TourSearch");
+    }
+    
     [HttpPost("Hotels")]
     public IActionResult Hotels([FromForm] string? from, [FromForm] string? to)
     {
@@ -81,6 +87,26 @@ public class ViewController : Controller
         );
 
         return View(hotels);
+    }
+    
+    [HttpPost("Tours")]
+    public IActionResult Tours([FromForm] string? from)
+    {
+        if (from == null)
+        {
+            return Problem("From date must be specified");
+        }
+
+        ViewBag.Message = new Hashtable
+        {
+            { "fromDate", from }
+        };
+
+        IEnumerable<Tour> tours = _availabilitySvc.ToursBetweenDates(
+            from.ParseDate()
+        );
+
+        return View(tours);
     }
 
     [HttpGet("Hotel/{hotelId}")]
@@ -109,6 +135,26 @@ public class ViewController : Controller
         return View(hotel);
     }
     
+    [HttpGet("Tour/{tourId}")]
+    public IActionResult Tour(int tourId, [FromQuery] string fromDate)
+    {
+        Tour? tour = _tourDbContext.Tours
+            .Include(t => t.Bookings)
+            .FirstOrDefault(t => t.Id == tourId);
+
+        if (tour == null)
+        {
+            return Problem($"No such tour: {tourId}");
+        }
+        
+        ViewBag.Message = new Hashtable
+        {
+            { "fromDate", fromDate }
+        };
+
+        return View(tour);
+    }
+    
     [HttpGet("Checkout")]
     [Authorize]
     public IActionResult Checkout()
@@ -120,12 +166,30 @@ public class ViewController : Controller
             DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
         };
         
+        TourBooking tourBooking = new TourBooking
+        {
+            Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
+            DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
+        };
+        
         Booking booking = new Booking
         {
             Customer = _tourDbContext.Customers.Find(User.Identity!.Name),
             RoomBooking = roomBooking,
-            TourBooking = null
+            TourBooking = tourBooking,
+            TotalCost = 0
         };
+
+        if (roomBooking.Room != null)
+        {
+            int days = roomBooking.DateTo.Subtract(roomBooking.DateFrom).Days;
+            booking.TotalCost += roomBooking.Room.Price * days;
+        }
+
+        if (tourBooking.Tour != null)
+        {
+            booking.TotalCost += tourBooking.Tour.Price;
+        }
         
         return View(booking);
     }

@@ -49,4 +49,25 @@ public class AvailabilityService
 
         return allHotels.Where(h => h.Rooms.Count > 0);
     }
+    
+    public int TourSpacesBetweenDates(Tour tour, DateTime from)
+    {
+        DateTime to = from.AddDays(tour.Length);
+        
+        return tour.Spaces - _tourDbContext.Entry(tour)
+            .Collection(t => t.Bookings)
+            .Query()
+            .ToList()
+            .Count(b => DatesOverlap(from, to, b.DateFrom,
+                b.DateFrom.AddDays(b.Tour!.Length)));
+    }
+    
+    public IEnumerable<Tour> ToursBetweenDates(DateTime from)
+    {
+        List<Tour> allTours = _tourDbContext.Tours
+            .Include(t => t.Bookings)
+            .ToList();
+
+        return allTours.Where(h => TourSpacesBetweenDates(h, from) > 0);
+    }
 }

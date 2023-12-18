@@ -1,0 +1,28 @@
+﻿@using TourOperator.Models.Entities
+@using TourOperator.Extensions
+
+@model IEnumerable<TourOperator.Models.Entities.Tour>
+
+@{
+    ViewData["Title"] = "Tours";
+    DateTime fromDate = DateTimeExtensions.ParseDate(ViewBag.Message["fromDate"]);
+}
+
+<div class="text-center">
+    <h1 class="display-4">Tours</h1>
+    
+    <div class="hotel-list">
+        @foreach(Tour tour in Model) {
+            <div class="hotel-item">
+                <h2>@tour.Name</h2>
+                <h3>@tour.Length Days - @(fromDate.AddDays(tour.Length).ToShortDate())</h3>
+                <h3>£@(tour.Price/100)</h3>
+                
+                <a class="btn btn-secondary nav-link text-dark" asp-area=""
+                   asp-controller="View" asp-action="Tour"
+                   asp-route-tourId="@tour.Id"
+                   asp-route-fromDate="@fromDate.ToShortDate()">More Info</a>
+            </div>
+        }
+    </div>
+</div>

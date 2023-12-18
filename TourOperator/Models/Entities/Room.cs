@@ -12,9 +12,4 @@ public class Room
     public int Spaces { get; set; }
 
     public IEnumerable<RoomBooking>? Bookings { get; set; }
-
-    [NotMapped]
-    public DateTime FromDate { get; set; }
-    [NotMapped]
-    public DateTime ToDate { get; set; }
 }
