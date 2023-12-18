@@ -16,7 +16,7 @@
     {
         <div class="room-item">
             <p>@room.Name</p>
-            <p>£@room.Price</p>
+            <p>£@(room.Price/100)</p>
             <p>@fromDate To @toDate</p>
             
             @if (User.Identity!.IsAuthenticated)

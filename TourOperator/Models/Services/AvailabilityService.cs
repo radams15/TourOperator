@@ -22,27 +22,22 @@ public class AvailabilityService
     {
         return hotel.Rooms
             .Where(
-                r => ! r.Bookings.Any(
-                    b => DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
-                )
-            )
-            .ToList();
+                r => r.Bookings.Count(b =>
+                    DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
+                    ) < r.Spaces
+            );
     }
 
     public IEnumerable<Hotel> HotelsBetweenDates(DateTime from, DateTime to)
     {
-        IEnumerable<Hotel> allHotels = _tourDbContext.Hotels
+        List<Hotel> allHotels = _tourDbContext.Hotels
             .Include(h => h.Operator)
             .Include(h => h.Rooms)
-                .ThenInclude(r => r.Bookings)
-                    .ThenInclude(b => b.Room);
-
-        foreach(Hotel h in allHotels)
-        {
-            h.Rooms = h.Rooms.Where(r => r.Bookings.Any(
-                b => DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
-            )).ToList();
-        }
+            .ThenInclude(r => r.Bookings).ToList();
+        
+        allHotels.ForEach(
+            h => h.Rooms = RoomsBetweenDates(h, from, to).ToList()
+        );
 
         return allHotels.Where(h => h.Rooms.Count > 0);
     }
