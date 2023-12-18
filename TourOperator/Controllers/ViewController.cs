@@ -108,11 +108,18 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Checkout()
     {
+        RoomBooking roomBooking = new RoomBooking
+        {
+            Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
+            DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
+            DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
+        };
+        
         Booking booking = new Booking
         {
             Customer = _tourDbContext.Customers.Find(User.Identity!.Name),
-            Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
-            Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
+            RoomBooking = roomBooking,
+            TourBooking = null
         };
         
         return View(booking);

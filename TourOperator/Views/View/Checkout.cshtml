@@ -20,15 +20,15 @@
             
             <tr>
                 <td>Hotel Room</td>
-                <td>@Model.Room?.Name @@ @Model.Room?.Hotel.Name</td>
-                <td>@Model.Room?.Price</td>
-                <td>@Model.Room?.FromDate To @Model.Room?.ToDate</td>
+                <td>@Model.RoomBooking?.Room?.Name @@ @Model.RoomBooking?.Room?.Hotel.Name</td>
+                <td>@Model.RoomBooking?.Room?.Price</td>
+                <td>@Model.RoomBooking?.Room?.FromDate To @Model.RoomBooking?.Room?.ToDate</td>
             </tr>
             
             <tr>
                 <td>Tour</td>
-                <td>@Model.Tour?.Name</td>
-                <td>£@Model.Tour?.Price/100</td>
+                <td>@Model.TourBooking?.Tour?.Name</td>
+                <td>£@Model.TourBooking?.Tour?.Price/100</td>
             </tr>
             
             <tr>

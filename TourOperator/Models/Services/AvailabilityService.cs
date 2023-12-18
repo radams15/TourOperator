@@ -22,10 +22,17 @@ public class AvailabilityService
     {
         return hotel.Rooms
             .Where(
-                r => r.Bookings.Count(b =>
-                    DatesOverlap(from, to, b.Room?.FromDate, b.Room?.ToDate)
-                    ) < r.Spaces
-            );
+                r =>
+                        {
+                            int count = r.Bookings.Count(b =>
+                                DatesOverlap(from, to, b.RoomBooking?.DateFrom, b.RoomBooking?.DateTo)
+                            );
+
+                            Console.WriteLine($"{r.Name}: {count} booked, {r.Spaces} spaces.");
+                            
+                            return count < r.Spaces;
+                        }
+                );
     }
 
     public IEnumerable<Hotel> HotelsBetweenDates(DateTime from, DateTime to)
