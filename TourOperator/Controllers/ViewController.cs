@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
@@ -15,7 +16,7 @@ using TourOperator.Models.Services;
 
 namespace TourOperator.Controllers;
 
-[ApiController]
+[Controller]
 [Route("/")]
 public class ViewController : Controller
 {
@@ -52,7 +53,43 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Customer()
     {
-        return View();
+        Customer? customer = _tourDbContext.Customers.Find(User.Identity!.Name);
+        return View(customer);
+    }
+    
+    [HttpPost("customer")]
+    [Authorize]
+    public ActionResult Customer([FromForm] Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+            Customer? beforeCustomer = _tourDbContext.Customers
+                .AsNoTracking()
+                .SingleOrDefault(c => c.Username == User.Identity!.Name);
+            
+            if (beforeCustomer == null)
+                return Problem($"Could not find customer: {User.Identity!.Name}");
+            
+            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+
+            customer.Username = beforeCustomer.Username;
+            customer.Password = customer.Password?.Sha256() ?? beforeCustomer.Password;
+            _tourDbContext.Customers.Update(customer);
+            _tourDbContext.SaveChanges();
+            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+            return View(customer);
+        }
+        
+        _logger.LogError("Invalid Customer: {}", JsonSerializer.Serialize(customer));
+
+        foreach (var value in ModelState.Values)
+        {
+            if(value.Errors.Count > 0)
+                foreach(var error in value.Errors)
+                    _logger.LogError("Error: {}", error.ErrorMessage);
+        }
+
+        return View(customer);
     }
     
     [HttpGet("Hotels")]

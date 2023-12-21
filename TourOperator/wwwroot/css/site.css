@@ -41,3 +41,8 @@ td, th {
   background-color: #eaeaea;
   font-weight: bold;
 }
+
+.validation-error {
+  color: red;
+  font-weight: bold;
+}
