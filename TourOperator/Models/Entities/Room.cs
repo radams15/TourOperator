@@ -10,6 +10,8 @@ public class Room
     public string Name { get; set; }
     public int Price { get; set; }
     public int Spaces { get; set; }
+    
+    public int PackageDiscount { get; set; }
 
     public IEnumerable<RoomBooking>? Bookings { get; set; }
 }

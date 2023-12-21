@@ -140,4 +140,20 @@ INVALID_PASSWORD:
         
         return Redirect($"/Tour/{tour.Id}?fromDate={fromDate}");
     }
+
+    [HttpPost("/deposit")]
+    [Authorize]
+    public ActionResult<Booking> MakeDeposit([FromForm] Booking booking)
+    {
+        booking.DepositPaid = true;
+        booking.Customer = _tourDbContext.Customers.Single(c => c.Username == booking.Username);
+        booking.Due = (int) (booking.TotalCost * 0.8);
+        booking.DateBooked = DateTime.Now;
+
+        _tourDbContext.Bookings.Add(booking);
+
+        _tourDbContext.SaveChanges();
+        
+        return Redirect($"/booking/confirmed?bookingId={booking.Id}");
+    }
 }

@@ -165,16 +165,18 @@ public class ViewController : Controller
             DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
             DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
         };
+        roomBooking.RoomId = roomBooking.Room!.Id;
         
         TourBooking tourBooking = new TourBooking
         {
             Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
             DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
         };
+        tourBooking.TourId = tourBooking.Tour!.Id;
         
         Booking booking = new Booking
         {
-            Customer = _tourDbContext.Customers.Find(User.Identity!.Name),
+            Username = User.Identity!.Name,
             RoomBooking = roomBooking,
             TourBooking = tourBooking,
             TotalCost = 0
@@ -190,11 +192,34 @@ public class ViewController : Controller
         {
             booking.TotalCost += tourBooking.Tour.Price;
         }
+
+        if (roomBooking.Room != null && tourBooking.Tour != null)
+        {
+            
+        }
         
         return View(booking);
     }
+    
+    [HttpGet("booking/confirmed")]
+    public IActionResult BookingConfirmed([FromQuery] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.Customer)
+            .Include(b => b.RoomBooking!.Room)
+                .ThenInclude(r => r!.Hotel)
+            .Include(b => b.TourBooking!.Tour)
+            .FirstOrDefault(b => b.Id == bookingId);
 
-
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+        
+        if(booking.Customer!.Username != User.Identity!.Name)
+            return Problem($"Cannot load booking not for user {User.Identity!.Name}");
+        
+        return View(booking);
+    }
+    
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [Route("error")]
     public IActionResult Error()
