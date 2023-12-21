@@ -8,7 +8,7 @@ my $out_file_name = "./Contexts/DbModelCreator.cs";
 my $template = <<END;
 using Microsoft.EntityFrameworkCore;
 
-using TourOperator.Models;
+using TourOperator.Models.Entities;
 
 namespace TourOperator.Contexts;
 
@@ -92,9 +92,9 @@ $id=1;
 while(my ($name, $info) = each(%hotels)) {
     my ($operator, $description, $single, $double, $family) = @$info;
     (my $var = $name) =~ s/[\s,;]//g;
-    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Single Bed\", HotelId = $var.Id, Price = @{[$single*100]}, Spaces = $room_spaces},";
-    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Double Bed\", HotelId = $var.Id, Price = @{[$double*100]}, Spaces = $room_spaces},";
-    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Family Suite\", HotelId = $var.Id, Price = @{[$family*100]}, Spaces = $room_spaces},";
+    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Single Bed\", HotelId = $var.Id, Price = @{[$single*100]}, Spaces = $room_spaces, PackageDiscount = 10},";
+    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Double Bed\", HotelId = $var.Id, Price = @{[$double*100]}, Spaces = $room_spaces, PackageDiscount = 20},";
+    $content .= "\n\tnew Room{Id = @{[$id++]}, Name = \"Family Suite\", HotelId = $var.Id, Price = @{[$family*100]}, Spaces = $room_spaces, PackageDiscount = 40},";
 }
 chop $content;
 $content .= "\n);";

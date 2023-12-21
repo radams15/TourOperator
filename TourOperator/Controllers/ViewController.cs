@@ -195,7 +195,7 @@ public class ViewController : Controller
 
         if (roomBooking.Room != null && tourBooking.Tour != null)
         {
-            
+            booking.TotalCost *= 1-(roomBooking.Room.PackageDiscount / 100);
         }
         
         return View(booking);

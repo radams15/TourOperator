@@ -34,7 +34,14 @@
             
             <tr id="checkout-total">
                 <td>Total</td>
-                <td></td>
+                @if (Model.RoomBooking!.Room != null && Model.TourBooking!.Tour != null)
+                {
+                    <td>Package Discount (@(Model.RoomBooking!.Room.PackageDiscount)%)</td>
+                }
+                else
+                {
+                    <td></td>
+                }
                 <td>£@(Model.TotalCost / 100)</td>
                 <td></td>
             </tr>

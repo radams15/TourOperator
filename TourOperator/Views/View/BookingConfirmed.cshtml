@@ -9,8 +9,7 @@
     <h1 class="display-4">Booking Confirmed!</h1>
     
     <h2>
-        We hope you enjoy your trip to @Model.RoomBooking?.Room?.Hotel.Name and
-        @Model.TourBooking?.Tour?.Name
+        We hope you enjoy your trip!
     </h2>
     
     <div class="checkout">
@@ -39,7 +38,14 @@
             
             <tr id="checkout-total">
                 <td>Total</td>
-                <td></td>
+                @if (Model.RoomBooking!.Room != null && Model.TourBooking!.Tour != null)
+                {
+                    <td>Package Discount (@(Model.RoomBooking!.Room.PackageDiscount)%)</td>
+                }
+                else
+                {
+                    <td></td>
+                }
                 <td>£@(Model.TotalCost / 100)</td>
                 <td></td>
             </tr>
