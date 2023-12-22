@@ -7,6 +7,8 @@
 <div class="text-center">
     <h1 class="display-4">Customer</h1>
     
+    <a asp-controller="View" asp-action="Bookings" class="btn btn-secondary">Bookings</a>
+    
     <form method="post" asp-controller="View" asp-action="Customer">
         <div>
             <label asp-for="Username"></label><br />
@@ -38,6 +40,6 @@
             <span asp-validation-for="PhoneNo" class="validation-error"></span>
         </div>
         
-        <button type="submit" class="w-100 btn btn-lg btn-primary">Submit</button>
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Update</button>
     </form>
 </div>

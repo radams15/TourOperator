@@ -202,14 +202,16 @@ public class ViewController : Controller
             DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
             DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
         };
-        roomBooking.RoomId = roomBooking.Room!.Id;
+        if(roomBooking.Room != null)
+            roomBooking.RoomId = roomBooking.Room!.Id;
         
         TourBooking tourBooking = new TourBooking
         {
             Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
             DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
         };
-        tourBooking.TourId = tourBooking.Tour!.Id;
+        if(tourBooking.Tour != null)
+            tourBooking.TourId = tourBooking.Tour.Id;
         
         Booking booking = new Booking
         {
@@ -234,12 +236,14 @@ public class ViewController : Controller
         {
             booking.TotalCost *= 1-(roomBooking.Room.PackageDiscount / 100);
         }
+
+        Console.WriteLine(booking);
         
         return View(booking);
     }
     
-    [HttpGet("booking/confirmed")]
-    public IActionResult BookingConfirmed([FromQuery] int bookingId)
+    [HttpGet("booking")]
+    public IActionResult BookingInfo([FromQuery] int bookingId)
     {
         Booking? booking = _tourDbContext.Bookings
             .Include(b => b.Customer)
@@ -255,6 +259,18 @@ public class ViewController : Controller
             return Problem($"Cannot load booking not for user {User.Identity!.Name}");
         
         return View(booking);
+    }
+
+    [HttpGet("/customer/bookings")]
+    [Authorize]
+    public ActionResult Bookings()
+    {
+        IEnumerable<Booking> bookings = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking!.Room!.Hotel)
+            .Include(b => b.TourBooking!.Tour)
+            .Where(b => b.Username == User.Identity!.Name);
+
+        return View(bookings);
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

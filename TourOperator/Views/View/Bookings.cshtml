@@ -1,0 +1,50 @@
+﻿@using TourOperator.Extensions
+@using TourOperator.Models.Entities
+@model IEnumerable<Booking>
+
+@{
+    ViewData["Title"] = "Bookings";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Bookings</h1>
+    
+    <table>
+        <tr>
+            <th>Tour Name</th>
+            <th>Room Name</th>
+            <th>Due</th>
+            <th>Edit</th>
+        </tr>
+        
+        @foreach(Booking booking in Model)
+        {
+            <tr>
+                <td>
+                    @if (booking.TourBooking != null)
+                    {
+                        <span>@booking.TourBooking.Tour!.Name</span>
+                        <span>@booking.TourBooking?.DateFrom.ToShortDate()</span>
+                        <span>(@(booking.TourBooking?.Tour?.Length) Days)</span>
+                    }
+                </td>
+                
+                <td>
+                    @if (booking.RoomBooking != null)
+                    {
+                        <span>@booking.RoomBooking.Room!.Hotel.Name</span>
+                        <span>@booking.RoomBooking?.DateFrom.ToShortDate() To @booking.RoomBooking?.DateTo.ToShortDate()</span>
+                    }
+                </td>
+                
+                <td>
+                    £@(booking.Due/100)
+                </td>
+                
+                <td>
+                    <a ></a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
