@@ -20,14 +20,14 @@ public class Customer
     
     [StringLength(256, MinimumLength = 4)]
     public string? Password { get; set; } = "";
-    
+
     [Required]
     [DisplayName("Passport Number")]
     [PassportNumber]
-    public string PassportNo { get; set; }
-    
+    public string? PassportNo { get; set; } = "";
+
     [Required]
     [DisplayName("Phone Number")]
     [Phone]
-    public string PhoneNo { get; set; }
+    public string? PhoneNo { get; set; } = "";
 }

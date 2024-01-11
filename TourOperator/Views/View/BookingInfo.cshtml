@@ -22,25 +22,31 @@
                 <th>Dates</th>
             </tr>
             
-            <tr>
-                <td>Hotel Room</td>
-                <td>@Model.RoomBooking?.Room?.Name</td>
-                <td>£@((Model.RoomBooking?.Room?.Price*Model.RoomBooking?.DateTo.Subtract(Model.RoomBooking.DateFrom).Days)/100)</td>
-                <td>@Model.RoomBooking?.DateFrom.ToShortDate() To @Model.RoomBooking?.DateTo.ToShortDate()</td>
-            </tr>
-            
-            <tr>
-                <td>Tour</td>
-                <td>@Model.TourBooking?.Tour?.Name</td>
-                <td>£@(Model.TourBooking?.Tour?.Price/100)</td>
-                <td>@Model.TourBooking?.DateFrom.ToShortDate() (@Model.TourBooking?.Tour?.Length Days)</td>
-            </tr>
-            
+            @if (Model.RoomBooking != null)
+            {
+                <tr>
+                    <td>Hotel Room</td>
+                    <td>@Model.RoomBooking?.Room?.Name</td>
+                    <td>£@((Model.RoomBooking?.Room?.Price * Model.RoomBooking?.DateTo.Subtract(Model.RoomBooking.DateFrom).Days) / 100)</td>
+                    <td>@Model.RoomBooking?.DateFrom.ToShortDate() To @Model.RoomBooking?.DateTo.ToShortDate()</td>
+                </tr>
+            }
+
+            @if (Model.TourBooking != null)
+            {
+                <tr>
+                    <td>Tour</td>
+                    <td>@Model.TourBooking?.Tour?.Name</td>
+                    <td>£@(Model.TourBooking?.Tour?.Price / 100)</td>
+                    <td>@Model.TourBooking?.DateFrom.ToShortDate() (@Model.TourBooking?.Tour?.Length Days)</td>
+                </tr>
+            }
+
             <tr id="checkout-total">
                 <td>Total</td>
-                @if (Model.RoomBooking!.Room != null && Model.TourBooking!.Tour != null)
+                @if (Model.RoomBooking != null && Model.TourBooking != null)
                 {
-                    <td>Package Discount (@(Model.RoomBooking!.Room.PackageDiscount)%)</td>
+                    <td>Package Discount (@(Model.RoomBooking?.Room?.PackageDiscount)%)</td>
                 }
                 else
                 {

@@ -84,6 +84,17 @@ namespace TourOperator.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            FullName = "Rhys Adams",
+                            PassportNo = "",
+                            Password = "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1",
+                            PhoneNo = "",
+                            Username = "rhys"
+                        });
                 });
 
             modelBuilder.Entity("TourOperator.Models.Entities.Hotel", b =>
@@ -116,28 +127,28 @@ namespace TourOperator.Migrations
                         {
                             Id = 1,
                             Description = "a hotel",
-                            Name = "London Marriott Hotel",
+                            Name = "Leonardo Hotel Brighton",
                             OperatorId = 1
                         },
                         new
                         {
                             Id = 2,
                             Description = "a hotel",
-                            Name = "Leonardo Hotel Brighton",
+                            Name = "London Marriott Hotel",
                             OperatorId = 2
                         },
                         new
                         {
                             Id = 3,
                             Description = "a hotel",
-                            Name = "Kings Hotel Brighton",
+                            Name = "Travelodge Brighton Seafront",
                             OperatorId = 3
                         },
                         new
                         {
                             Id = 4,
                             Description = "a hotel",
-                            Name = "Travelodge Brighton Seafront",
+                            Name = "Kings Hotel Brighton",
                             OperatorId = 4
                         },
                         new
@@ -176,22 +187,22 @@ namespace TourOperator.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Marriott"
-                        },
-                        new
-                        {
-                            Id = 2,
                             Name = "Leonardo"
                         },
                         new
                         {
+                            Id = 2,
+                            Name = "Marriott"
+                        },
+                        new
+                        {
                             Id = 3,
-                            Name = "Kings"
+                            Name = "Travelodge"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Travelodge"
+                            Name = "Kings"
                         },
                         new
                         {
@@ -242,7 +253,7 @@ namespace TourOperator.Migrations
                             HotelId = 1,
                             Name = "Single Bed",
                             PackageDiscount = 10,
-                            Price = 30000,
+                            Price = 18000,
                             Spaces = 20
                         },
                         new
@@ -251,7 +262,7 @@ namespace TourOperator.Migrations
                             HotelId = 1,
                             Name = "Double Bed",
                             PackageDiscount = 20,
-                            Price = 50000,
+                            Price = 40000,
                             Spaces = 20
                         },
                         new
@@ -260,7 +271,7 @@ namespace TourOperator.Migrations
                             HotelId = 1,
                             Name = "Family Suite",
                             PackageDiscount = 40,
-                            Price = 90000,
+                            Price = 52000,
                             Spaces = 20
                         },
                         new
@@ -269,7 +280,7 @@ namespace TourOperator.Migrations
                             HotelId = 2,
                             Name = "Single Bed",
                             PackageDiscount = 10,
-                            Price = 18000,
+                            Price = 30000,
                             Spaces = 20
                         },
                         new
@@ -278,7 +289,7 @@ namespace TourOperator.Migrations
                             HotelId = 2,
                             Name = "Double Bed",
                             PackageDiscount = 20,
-                            Price = 40000,
+                            Price = 50000,
                             Spaces = 20
                         },
                         new
@@ -287,7 +298,7 @@ namespace TourOperator.Migrations
                             HotelId = 2,
                             Name = "Family Suite",
                             PackageDiscount = 40,
-                            Price = 52000,
+                            Price = 90000,
                             Spaces = 20
                         },
                         new
@@ -296,7 +307,7 @@ namespace TourOperator.Migrations
                             HotelId = 3,
                             Name = "Single Bed",
                             PackageDiscount = 10,
-                            Price = 18000,
+                            Price = 8000,
                             Spaces = 20
                         },
                         new
@@ -305,7 +316,7 @@ namespace TourOperator.Migrations
                             HotelId = 3,
                             Name = "Double Bed",
                             PackageDiscount = 20,
-                            Price = 40000,
+                            Price = 12000,
                             Spaces = 20
                         },
                         new
@@ -314,7 +325,7 @@ namespace TourOperator.Migrations
                             HotelId = 3,
                             Name = "Family Suite",
                             PackageDiscount = 40,
-                            Price = 52000,
+                            Price = 15000,
                             Spaces = 20
                         },
                         new
@@ -323,7 +334,7 @@ namespace TourOperator.Migrations
                             HotelId = 4,
                             Name = "Single Bed",
                             PackageDiscount = 10,
-                            Price = 8000,
+                            Price = 18000,
                             Spaces = 20
                         },
                         new
@@ -332,7 +343,7 @@ namespace TourOperator.Migrations
                             HotelId = 4,
                             Name = "Double Bed",
                             PackageDiscount = 20,
-                            Price = 12000,
+                            Price = 40000,
                             Spaces = 20
                         },
                         new
@@ -341,7 +352,7 @@ namespace TourOperator.Migrations
                             HotelId = 4,
                             Name = "Family Suite",
                             PackageDiscount = 40,
-                            Price = 15000,
+                            Price = 52000,
                             Spaces = 20
                         },
                         new
@@ -464,18 +475,18 @@ namespace TourOperator.Migrations
                         {
                             Id = 1,
                             Description = "a tour",
-                            Length = 12,
-                            Name = "Best of Britain",
-                            Price = 290000,
+                            Length = 6,
+                            Name = "Real Britain",
+                            Price = 120000,
                             Spaces = 30
                         },
                         new
                         {
                             Id = 2,
                             Description = "a tour",
-                            Length = 6,
-                            Name = "Real Britain",
-                            Price = 120000,
+                            Length = 12,
+                            Name = "Best of Britain",
+                            Price = 290000,
                             Spaces = 30
                         },
                         new
