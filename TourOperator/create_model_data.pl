@@ -39,8 +39,14 @@ my %hotels = (
 
 my $content = "\t\t";
 
+$content .= <<END;
+modelBuilder.Entity<Customer>().HasData(
+    new Customer{Id = 1, Username = "rhys", FullName="Rhys Adams", Password = "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"}
+);
+END
+
 my $id=1;
-$content .= "modelBuilder.Entity<Tour>().HasData(";
+$content .= "\nmodelBuilder.Entity<Tour>().HasData(";
 while(my ($name, $info) = each(%tours)) {
     my ($description, $length, $cost, $spaces) = @$info;
     $content .= "\n\tnew Tour{Id = $id, Name = \"$name\", Description = \"$description\", Length = $length, Price = @{[$cost * 100]}, Spaces = $spaces},";

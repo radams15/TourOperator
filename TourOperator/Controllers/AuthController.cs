@@ -146,7 +146,7 @@ INVALID_PASSWORD:
     public ActionResult<Booking> MakeDeposit([FromForm] Booking booking)
     {
         booking.DepositPaid = true;
-        booking.Customer = _tourDbContext.Customers.Single(c => c.Username == booking.Username);
+        booking.Customer = _tourDbContext.Customers.Single(c => c.Id == booking.CustomerId);
         booking.Due = (int) (booking.TotalCost * 0.8);
         booking.DateBooked = DateTime.Now;
 
@@ -154,6 +154,6 @@ INVALID_PASSWORD:
 
         _tourDbContext.SaveChanges();
         
-        return Redirect($"/booking/confirmed?bookingId={booking.Id}");
+        return Redirect($"/booking?bookingId={booking.Id}");
     }
 }

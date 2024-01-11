@@ -49,7 +49,7 @@
         
         @using (Html.BeginForm("MakeDeposit", "Auth", FormMethod.Post))
         {
-            @Html.HiddenFor(model => model.Username)
+            @Html.HiddenFor(model => model.CustomerId)
             @Html.HiddenFor(model => model.Customer)
             @Html.HiddenFor(model => model.RoomBooking)
             @Html.HiddenFor(model => model.RoomBooking!.RoomId)

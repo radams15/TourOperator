@@ -5,7 +5,7 @@ namespace TourOperator.Models.Entities;
 public class Booking
 {
     public int Id { get; set; }
-    public string? Username { get; set; } = "";
+    public int? CustomerId { get; set; }
     public Customer? Customer { get; set; }
     
     public RoomBooking? RoomBooking { get; set; }

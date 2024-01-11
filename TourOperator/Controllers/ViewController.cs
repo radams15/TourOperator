@@ -191,6 +191,18 @@ public class ViewController : Controller
 
         return View(tour);
     }
+
+    private Customer CurrentCustomer()
+    {
+        Customer customer = _tourDbContext.Customers
+            .Where(c => c.Username == User.Identity!.Name)
+            .FirstOrDefault() ;
+
+        if (customer != null)
+            return customer;
+
+        throw new Exception("Invalid User");
+    }
     
     [HttpGet("Checkout")]
     [Authorize]
@@ -215,7 +227,7 @@ public class ViewController : Controller
         
         Booking booking = new Booking
         {
-            Username = User.Identity!.Name,
+            CustomerId = CurrentCustomer().Id,
             RoomBooking = roomBooking,
             TourBooking = tourBooking,
             TotalCost = 0
@@ -265,10 +277,12 @@ public class ViewController : Controller
     [Authorize]
     public ActionResult Bookings()
     {
+        int customerId = CurrentCustomer().Id;
+        
         IEnumerable<Booking> bookings = _tourDbContext.Bookings
             .Include(b => b.RoomBooking!.Room!.Hotel)
             .Include(b => b.TourBooking!.Tour)
-            .Where(b => b.Username == User.Identity!.Name);
+            .Where(b => b.CustomerId == customerId);
 
         return View(bookings);
     }
