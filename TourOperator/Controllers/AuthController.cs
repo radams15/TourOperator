@@ -42,7 +42,7 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] string username, [FromForm] string password)
     {
-        Customer? existing = _tourDbContext.Customers.Find(username);
+        Customer? existing = _tourDbContext.Customers.SingleOrDefault(c => c.Username == username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
@@ -79,33 +79,6 @@ public class AuthController : Controller
 INVALID_PASSWORD:
         _logger.LogInformation("Failed login, User {}.", username);
         return Problem("Invalid username or password");
-    }
-    
-    [HttpPost("register")]
-    public ActionResult<Customer> Register([FromForm] string username, [FromForm] string password, [FromForm] string password2)
-    {
-        if (password != password2)
-            return Problem("Password 1 != Password 2");
-
-        string passwordHash = password.Sha256();
-        
-        Customer customer = new()
-        {
-            Username = username,
-            Password = passwordHash
-        };
-        
-        _tourDbContext.Customers.Add(customer);
-        _tourDbContext.SaveChanges();
-        
-        _logger.LogInformation("User {} created.", customer.Username);
-
-        Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Username);
-
-        if (createdCustomer != null)
-            return Ok(createdCustomer);
-        
-        return Problem("Failed to create customer");
     }
 
 

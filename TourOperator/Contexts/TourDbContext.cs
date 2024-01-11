@@ -22,5 +22,9 @@ public class TourDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         DbModelCreator.CreateModels(modelBuilder);
+        
+        modelBuilder.Entity<Customer>()
+            .HasIndex(c => c.Username)
+            .IsUnique();
     }
 }

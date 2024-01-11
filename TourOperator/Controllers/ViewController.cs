@@ -46,15 +46,38 @@ public class ViewController : Controller
     [HttpGet("register")]
     public IActionResult Register()
     {
-        return View();
+        return View(new Customer());
+    }
+    
+    [HttpPost("register")]
+    public ActionResult<Customer> Register([FromForm] Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+
+            customer.Password = customer.Password.Sha256();
+
+            _tourDbContext.Customers.Add(customer);
+            _tourDbContext.SaveChanges();
+
+            _logger.LogInformation("User {} created.", customer.Username);
+
+            Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Id);
+
+            if (createdCustomer != null)
+                return Redirect("/");
+            
+            return Problem("Failed to create customer");
+        }
+
+        return View(customer);
     }
     
     [HttpGet("customer")]
     [Authorize]
     public IActionResult Customer()
     {
-        Customer? customer = _tourDbContext.Customers.Find(User.Identity!.Name);
-        return View(customer);
+        return View(CurrentCustomer());
     }
     
     [HttpPost("customer")]
@@ -63,12 +86,7 @@ public class ViewController : Controller
     {
         if (ModelState.IsValid)
         {
-            Customer? beforeCustomer = _tourDbContext.Customers
-                .AsNoTracking()
-                .SingleOrDefault(c => c.Username == User.Identity!.Name);
-            
-            if (beforeCustomer == null)
-                return Problem($"Could not find customer: {User.Identity!.Name}");
+            Customer beforeCustomer = CurrentCustomer();
             
             _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
 

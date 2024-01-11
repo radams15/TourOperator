@@ -1,21 +1,43 @@
-﻿@{
+﻿@model TourOperator.Models.Entities.Customer
+
+@{
     ViewData["Title"] = "Register";
 }
 
 <div class="text-center">
-    <form action="/auth/register" method="post">
-        <label for="username">Username: </label>
-        <input name="username" id="username">
-        <br/>
-        
-        <label for="password">Password: </label>
-        <input name="password" id="password" type="password">
-        <br/>
-        
-        <label for="password2">Password (Repeated): </label>
-        <input name="password2" id="password2" type="password">
-        <br/>
-        
-        <input class="btn btn-primary" type="submit" value="Login"/>
-    </form>
+    <h1 class="display-4">Register</h1>
+    
+    @using(Html.BeginForm("Register", "View", FormMethod.Post)) {
+        <div>
+            <label asp-for="Username"></label><br/>
+            <input asp-for="Username"/>
+            <span asp-validation-for="Username" class="validation-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="FullName"></label><br/>
+            <input asp-for="FullName"/>
+            <span asp-validation-for="FullName" class="validation-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="Password"></label><br/>
+            <input asp-for="Password" type="password" value=""/>
+            <span asp-validation-for="Password" class="validation-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="PassportNo"></label><br/>
+            <input asp-for="PassportNo"/>
+            <span asp-validation-for="PassportNo" class="validation-error"></span>
+        </div>
+
+        <div>
+            <label asp-for="PhoneNo"></label><br/>
+            <input asp-for="PhoneNo"/>
+            <span asp-validation-for="PhoneNo" class="validation-error"></span>
+        </div>
+
+        <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    }
 </div>
