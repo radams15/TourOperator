@@ -11,10 +11,10 @@
     
     <table>
         <tr>
-            <th>Tour Name</th>
-            <th>Room Name</th>
+            <th>Tour</th>
+            <th>Room</th>
             <th>Due</th>
-            <th>Edit</th>
+            <th></th>
         </tr>
         
         @foreach(Booking booking in Model)
@@ -42,7 +42,7 @@
                 </td>
                 
                 <td>
-                    <a ></a>
+                    <a class="btn btn-secondary" asp-controller="View" asp-action="BookingInfo" asp-route-bookingId="@booking.Id">View</a>
                 </td>
             </tr>
         }
