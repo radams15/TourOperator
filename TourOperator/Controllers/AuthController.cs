@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TourOperator.Contexts;
 using TourOperator.Extensions;
-using TourOperator.Models;
 using TourOperator.Models.Entities;
 
 namespace TourOperator.Controllers;
@@ -109,7 +108,7 @@ INVALID_PASSWORD:
             return Problem($"Could not find tour {tourId}");
         
         HttpContext.Session.SetObject("PackageTour", tour);
-        HttpContext.Session.SetObject("RoomDateFrom", fromDate.ParseDate());
+        HttpContext.Session.SetObject("TourDateFrom", fromDate.ParseDate());
         
         return Redirect($"/Tour/{tour.Id}?fromDate={fromDate}");
     }
@@ -134,6 +133,29 @@ INVALID_PASSWORD:
         _tourDbContext.SaveChanges();
         
         return Redirect($"/booking?bookingId={booking.Id}");
+    }
+    
+    [HttpPost("/booking/edit")]
+    [Authorize]
+    public ActionResult<Booking> EditBooking([FromForm] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+
+        booking.Due = 0;
+        
+        HttpContext.Session.SetObject("RoomDateTo", booking.RoomBooking?.DateTo);
+        HttpContext.Session.SetObject("RoomDateFrom", booking.RoomBooking?.DateFrom);
+        HttpContext.Session.SetObject("PackageRoom", booking.RoomBooking?.Room);
+        
+        HttpContext.Session.SetObject("TourDateFrom", booking.TourBooking?.DateFrom);
+        HttpContext.Session.SetObject("PackageTour", booking.TourBooking);
+        
+        HttpContext.Session.SetInt32("EditingBooking", bookingId);
+        
+        return Redirect($"/");
     }
     
     [HttpPost("/booking/confirm")]

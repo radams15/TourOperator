@@ -16,6 +16,10 @@ public class Booking
     public bool DepositPaid { get; set; }
     public int Due { get; set; }
 
+    public int GetDaysUntilStart()
+    {
+        return (StartDate() - DateTime.Now).Days;
+    }
     public DateTime StartDate()
     {
         DateTime?[] startDates = { RoomBooking?.DateFrom, TourBooking?.DateFrom };
@@ -36,6 +40,6 @@ public class Booking
         if (IsConfirmed())
             return false;
         
-        return (StartDate() - DateTime.Now).Days < 28;
+        return GetDaysUntilStart() < 28;
     }
 }
