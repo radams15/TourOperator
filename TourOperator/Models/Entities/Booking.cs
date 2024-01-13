@@ -15,4 +15,27 @@ public class Booking
     public int TotalCost { get; set; }
     public bool DepositPaid { get; set; }
     public int Due { get; set; }
+
+    public DateTime StartDate()
+    {
+        DateTime?[] startDates = { RoomBooking?.DateFrom, TourBooking?.DateFrom };
+
+        return startDates
+            .Where(d => d != null)
+            .OfType<DateTime>()
+            .Min();
+    }
+
+    public bool IsConfirmed()
+    {
+        return Due == 0;
+    }
+
+    public bool IsForfeit()
+    {
+        if (IsConfirmed())
+            return false;
+        
+        return (StartDate() - DateTime.Now).Days < 28;
+    }
 }

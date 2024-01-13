@@ -135,4 +135,22 @@ INVALID_PASSWORD:
         
         return Redirect($"/booking?bookingId={booking.Id}");
     }
+    
+    [HttpPost("/booking/confirm")]
+    [Authorize]
+    public ActionResult<Booking> ConfirmBooking([FromForm] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+
+        booking.Due = 0;
+        
+        _tourDbContext.Bookings.Update(booking);
+
+        _tourDbContext.SaveChanges();
+        
+        return Redirect($"/booking?bookingId={booking.Id}");
+    }
 }
