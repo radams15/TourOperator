@@ -266,7 +266,7 @@ public class ViewController : Controller
         {
             booking.TotalCost *= 1-(roomBooking.Room.PackageDiscount / 100);
         }
-
+        
         Console.WriteLine(booking);
         
         return View(booking);

@@ -47,6 +47,8 @@
             </tr>
         </table>
         
+        <h2>Deposit to be paid now: £@(Model.TotalCost*0.2 / 100)</h2>
+        
         @using (Html.BeginForm("MakeDeposit", "Auth", FormMethod.Post))
         {
             @Html.HiddenFor(model => model.CustomerId)
@@ -61,9 +63,9 @@
             @Html.HiddenFor(model => model.DateBooked)
             @Html.HiddenFor(model => model.TotalCost)
             @Html.HiddenFor(model => model.DepositPaid)
-            @Html.HiddenFor(model => model.Due);
+            @Html.HiddenFor(model => model.Due)
             
-            <button type="submit" class="btn btn-primary">Reserve</button>
+            <button type="submit" class="btn btn-primary">Make Deposit</button>
         }
         
     </div>

@@ -41,8 +41,15 @@
                     <td>@Model.TourBooking?.DateFrom.ToShortDate() (@Model.TourBooking?.Tour?.Length Days)</td>
                 </tr>
             }
-
-            <tr id="checkout-total">
+            
+            <tr>
+                <td>Deposit Paid</td>
+                <td></td>
+                <td>£@(Model.TotalCost*0.2 / 100)</td>
+                <td></td>
+            </tr>
+            
+            <tr>
                 <td>Total</td>
                 @if (Model.RoomBooking != null && Model.TourBooking != null)
                 {
@@ -53,6 +60,13 @@
                     <td></td>
                 }
                 <td>£@(Model.TotalCost / 100)</td>
+                <td></td>
+            </tr>
+
+            <tr id="checkout-total">
+                <td>Due</td>
+                <td></td>
+                <td>£@(Model.Due / 100)</td>
                 <td></td>
             </tr>
         </table>
