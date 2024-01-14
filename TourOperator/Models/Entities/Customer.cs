@@ -12,21 +12,19 @@ public class Customer
     [DisplayName("Username")]
     public string Username { get; set; } = "";
     
-    [Required]
     [DisplayName("Full Name")]
-    [StringLength(64, MinimumLength = 2)]
-    public string? FullName { get; set; } = "";
+    [StringLength(64, MinimumLength = 4)]
+    public string FullName { get; set; } = "";
     
-    [StringLength(256, MinimumLength = 4)]
-    public string? Password { get; set; } = "";
+    [StringLength(64, MinimumLength = 4)]
+    public string Password { get; set; } = "";
 
-    [Required]
     [DisplayName("Passport Number")]
     [PassportNumber]
-    public string? PassportNo { get; set; } = "";
+    [StringLength(12)]
+    public string PassportNo { get; set; } = "";
 
-    [Required]
     [DisplayName("Phone Number")]
     [Phone]
-    public string? PhoneNo { get; set; } = "";
+    public string PhoneNo { get; set; } = "";
 }
