@@ -16,6 +16,8 @@ public class Booking
     public bool DepositPaid { get; set; }
     public int Due { get; set; }
 
+    public bool Cancelled { get; set; } = false;
+
     public bool HasRoom()
     {
         return RoomBooking != null;

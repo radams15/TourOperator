@@ -71,22 +71,27 @@
             </tr>
         </table>
         
-        @if(Model.IsForfeit()) {
-            <h3>Unfortunately, as you have not paid in 28 days, your booking has been forfeit.</h3>
+        @if (Model.Cancelled){
+            <h3>You cancelled this order and have been refunded the total cost.</h3>
         }
-        
-        @if (!Model.IsForfeit()){
-            <a class="btn btn-primary" asp-controller="View" asp-action="EditBooking" asp-route-bookingId="@Model.Id">
-                Edit Booking
-            </a>
-        }
-        
-        @if(! Model.IsConfirmed() && ! Model.IsForfeit()) {
-            <h3> Pay by: @Model.StartDate().AddDays(-28).ToShortDate() </h3>
-            
-            <a class="btn btn-primary" asp-controller="Auth" asp-action="ConfirmBooking" asp-route-bookingId="@Model.Id">
-                Pay and Confirm
-            </a>
+        else{
+            if (Model.IsForfeit()){
+                <h3>Unfortunately, as you have not paid in 28 days, your booking has been forfeit.</h3>
+            }
+
+            if (!Model.IsForfeit()){
+                <a class="btn btn-primary" asp-controller="View" asp-action="EditBooking" asp-route-bookingId="@Model.Id">
+                    Edit Booking
+                </a>
+            }
+
+            if (!Model.IsConfirmed() && !Model.IsForfeit()){
+                <h3> Pay by: @Model.StartDate().AddDays(-28).ToShortDate() </h3>
+
+                <a class="btn btn-primary" asp-controller="Auth" asp-action="ConfirmBooking" asp-route-bookingId="@Model.Id">
+                    Pay and Confirm
+                </a>
+            }
         }
     </div>
 </div>

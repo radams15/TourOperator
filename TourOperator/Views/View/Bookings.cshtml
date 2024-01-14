@@ -43,6 +43,7 @@
                 
                 <td>
                     <a class="btn btn-secondary" asp-controller="View" asp-action="BookingInfo" asp-route-bookingId="@booking.Id">View</a>
+                    <a class="btn btn-danger" asp-controller="View" asp-action="CancelBooking" asp-route-bookingId="@booking.Id">Cancel</a>
                 </td>
             </tr>
         }

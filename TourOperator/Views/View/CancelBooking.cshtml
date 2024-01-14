@@ -1,0 +1,27 @@
+﻿@using TourOperator.Extensions
+@model TourOperator.Models.Entities.Booking
+
+@{
+    ViewData["Title"] = "Cancel Booking?";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Cancel Booking?</h1>
+    
+    <h2>
+        Are you sure?
+    </h2>
+    
+    <p>You are cancelling your trip starting @Model.StartDate().ToShortDate()</p>
+    
+    @if (Model.GetDaysUntilStart() <= 5){
+        <p class="error">You will have to pay a £50 administrative charge to cancel as you are due to depart in less than 5 days.</p>
+    }
+    
+    @using (Html.BeginForm("ConfirmCancelBooking", "View", FormMethod.Post))
+    {
+        <input hidden="" name="bookingId" value="@Model.Id"/>
+        
+        <button type="submit" class="btn btn-danger">Cancel</button>
+    }
+</div>

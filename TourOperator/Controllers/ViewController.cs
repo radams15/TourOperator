@@ -410,6 +410,39 @@ public class ViewController : Controller
         
         return Redirect($"/booking?bookingId={bookingId}");
     }
+    
+    [HttpGet("/booking/cancel")]
+    [Authorize]
+    public ActionResult<Booking> CancelBooking([FromQuery] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking)
+            .Include(b => b.TourBooking)
+            .SingleOrDefault(b => b.Id == bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+        
+        return View(booking);
+    }
+    
+    [HttpPost("/booking/cancel")]
+    [Authorize]
+    public ActionResult<Booking> ConfirmCancelBooking([FromForm] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings
+            .SingleOrDefault(b => b.Id == bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+
+        booking.Cancelled = true;
+        
+        _tourDbContext.Bookings.Update(booking);
+        _tourDbContext.SaveChanges();
+        
+        return Redirect($"/booking?bookingId={bookingId}");
+    }
 
     [HttpGet("/customer/bookings")]
     [Authorize]
