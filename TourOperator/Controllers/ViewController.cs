@@ -290,6 +290,18 @@ public class ViewController : Controller
         
         return View(booking);
     }
+    
+    [HttpGet("/booking/edit")]
+    [Authorize]
+    public ActionResult<Booking> EditBooking([FromQuery] int bookingId)
+    {
+        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+        
+        return View(booking);
+    }
 
     [HttpGet("/customer/bookings")]
     [Authorize]

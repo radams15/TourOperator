@@ -135,29 +135,7 @@ INVALID_PASSWORD:
         return Redirect($"/booking?bookingId={booking.Id}");
     }
     
-    [HttpPost("/booking/edit")]
-    [Authorize]
-    public ActionResult<Booking> EditBooking([FromForm] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-
-        booking.Due = 0;
-        
-        HttpContext.Session.SetObject("RoomDateTo", booking.RoomBooking?.DateTo);
-        HttpContext.Session.SetObject("RoomDateFrom", booking.RoomBooking?.DateFrom);
-        HttpContext.Session.SetObject("PackageRoom", booking.RoomBooking?.Room);
-        
-        HttpContext.Session.SetObject("TourDateFrom", booking.TourBooking?.DateFrom);
-        HttpContext.Session.SetObject("PackageTour", booking.TourBooking);
-        
-        HttpContext.Session.SetInt32("EditingBooking", bookingId);
-        
-        return Redirect($"/");
-    }
-    
+   
     [HttpPost("/booking/confirm")]
     [Authorize]
     public ActionResult<Booking> ConfirmBooking([FromForm] int bookingId)
