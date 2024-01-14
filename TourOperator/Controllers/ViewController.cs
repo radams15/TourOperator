@@ -1,20 +1,14 @@
-﻿using System.Collections;
+﻿namespace TourOperator.Controllers;
+
+using System.Collections;
 using System.Diagnostics;
-using System.Globalization;
-using System.Text.Json;
+using Contexts;
+using Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Extensions;
-using TourOperator.Models;
-using TourOperator.Models.Entities;
-using TourOperator.Models.Services;
-
-namespace TourOperator.Controllers;
+using Models.Entities;
+using Models.Services;
 
 [Controller]
 [Route("/")]

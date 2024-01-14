@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace TourOperator.Models.Entities;
 
 public class Booking

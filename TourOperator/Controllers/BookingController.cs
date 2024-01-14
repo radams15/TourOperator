@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿namespace TourOperator.Controllers;
+
+using Contexts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Models.Entities;
-
-namespace TourOperator.Controllers;
-
+using Models.Entities;
 using Models.Services;
 
 [Controller]

@@ -1,17 +1,13 @@
-﻿using System.Globalization;
+﻿namespace TourOperator.Controllers;
+
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+using Contexts;
+using Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Extensions;
-using TourOperator.Models.Entities;
-
-namespace TourOperator.Controllers;
+using Models.Entities;
 
 [Controller]
 [Route("/auth")]

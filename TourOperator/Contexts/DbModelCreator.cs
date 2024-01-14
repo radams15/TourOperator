@@ -1,8 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-
-using TourOperator.Models.Entities;
-
 namespace TourOperator.Contexts;
+
+using Microsoft.EntityFrameworkCore;
+using Models.Entities;
 
 public static class DbModelCreator
 {

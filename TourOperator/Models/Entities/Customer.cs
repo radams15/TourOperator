@@ -1,8 +1,8 @@
+namespace TourOperator.Models.Entities;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using TourOperator.Models.Attributes;
-
-namespace TourOperator.Models.Entities;
+using Attributes;
 
 public class Customer
 {
