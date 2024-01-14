@@ -10,36 +10,32 @@
     <a asp-controller="Booking" asp-action="AllBookings" class="btn btn-secondary">Bookings</a>
     
     <form method="post" asp-controller="View" asp-action="Customer">
+        @Html.HiddenFor(m => m.Username)
+
         <div>
-            <label asp-for="Username"></label><br />
-            <input disabled="" asp-for="Username" />
-            <span asp-validation-for="Username" class="validation-error"></span>
-        </div>
-        
-        <div>
-            <label asp-for="FullName"></label><br />
-            <input asp-for="FullName" />
+            <label asp-for="FullName"></label><br/>
+            <input asp-for="FullName"/>
             <span asp-validation-for="FullName" class="validation-error"></span>
         </div>
-        
+
         <div>
-            <label asp-for="Password"></label><br />
-            <input asp-for="Password" type="password" value="" />
+            <label asp-for="Password"></label><br/>
+            <input asp-for="Password" type="password" value=""/>
             <span asp-validation-for="Password" class="validation-error"></span>
         </div>
-        
+
         <div>
-            <label asp-for="PassportNo"></label><br />
-            <input asp-for="PassportNo" />
+            <label asp-for="PassportNo"></label><br/>
+            <input asp-for="PassportNo"/>
             <span asp-validation-for="PassportNo" class="validation-error"></span>
         </div>
-        
+
         <div>
-            <label asp-for="PhoneNo"></label><br />
-            <input asp-for="PhoneNo" />
+            <label asp-for="PhoneNo"></label><br/>
+            <input asp-for="PhoneNo"/>
             <span asp-validation-for="PhoneNo" class="validation-error"></span>
         </div>
-        
+
         <button type="submit" class="w-100 btn btn-lg btn-primary">Update</button>
     </form>
 </div>

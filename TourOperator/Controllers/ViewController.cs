@@ -52,18 +52,17 @@ public class ViewController : Controller
         {
             Customer beforeCustomer = CurrentCustomer();
             
-            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+            beforeCustomer.FullName = customer.FullName;
+            beforeCustomer.PhoneNo = customer.PhoneNo;
+            beforeCustomer.PassportNo = customer.PassportNo;
+            beforeCustomer.Password = customer.Password.Sha256();
 
-            customer.Username = beforeCustomer.Username;
-            customer.Password = customer.Password?.Sha256() ?? beforeCustomer.Password;
-            _tourDbContext.Customers.Update(customer);
+            _tourDbContext.Customers.Update(beforeCustomer);
             _tourDbContext.SaveChanges();
-            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+            
             return View(customer);
         }
         
-        _logger.LogError("Invalid Customer: {}", JsonSerializer.Serialize(customer));
-
         foreach (var value in ModelState.Values)
         {
             if(value.Errors.Count > 0)
