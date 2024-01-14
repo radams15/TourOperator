@@ -39,7 +39,7 @@
             
             <tr id="checkout-total">
                 <td>Total</td>
-                @if (Model.RoomBooking!.Room != null && Model.TourBooking!.Tour != null)
+                @if (Model.HasRoom() && Model.HasTour())
                 {
                     <td>Package Discount (@(Model.RoomBooking!.Room.PackageDiscount)%)</td>
                 }
@@ -58,13 +58,20 @@
             @using (Html.BeginForm("MakeDeposit", "Auth", FormMethod.Post)){
                 @Html.HiddenFor(model => model.CustomerId)
                 @Html.HiddenFor(model => model.Customer)
-                @Html.HiddenFor(model => model.RoomBooking)
-                @Html.HiddenFor(model => model.RoomBooking!.RoomId)
-                @Html.HiddenFor(model => model.RoomBooking!.DateFrom)
-                @Html.HiddenFor(model => model.RoomBooking!.DateTo)
-                @Html.HiddenFor(model => model.TourBooking!.TourId)
-                @Html.HiddenFor(model => model.TourBooking!.DateFrom)
-                @Html.HiddenFor(model => model.TourBooking)
+        
+                if (Model.HasRoom()){
+                    @Html.HiddenFor(model => model.RoomBooking)
+                    @Html.HiddenFor(model => model.RoomBooking!.RoomId)
+                    @Html.HiddenFor(model => model.RoomBooking!.DateFrom)
+                    @Html.HiddenFor(model => model.RoomBooking!.DateTo)
+                }
+
+                if (Model.HasTour()){
+                    @Html.HiddenFor(model => model.TourBooking!.TourId)
+                    @Html.HiddenFor(model => model.TourBooking!.DateFrom)
+                    @Html.HiddenFor(model => model.TourBooking)
+                }
+                
                 @Html.HiddenFor(model => model.DateBooked)
                 @Html.HiddenFor(model => model.TotalCost)
                 @Html.HiddenFor(model => model.DepositPaid)

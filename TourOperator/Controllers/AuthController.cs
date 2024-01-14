@@ -122,12 +122,6 @@ INVALID_PASSWORD:
         booking.Due = (int) (booking.TotalCost * 0.8);
         booking.DateBooked = DateTime.Now;
 
-        if (booking.TourBooking == null || booking.TourBooking.TourId == 0)
-            booking.TourBooking = null;
-        
-        if (booking.RoomBooking == null || booking.RoomBooking.RoomId == 0)
-            booking.RoomBooking = null;
-
         _tourDbContext.Bookings.Add(booking);
 
         _tourDbContext.SaveChanges();

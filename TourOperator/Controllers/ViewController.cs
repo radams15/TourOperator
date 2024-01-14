@@ -226,23 +226,28 @@ public class ViewController : Controller
     [Authorize]
     public IActionResult Checkout()
     {
-        RoomBooking roomBooking = new RoomBooking
-        {
-            Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
-            DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"),
-            DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
-        };
-        if(roomBooking.Room != null)
-            roomBooking.RoomId = roomBooking.Room!.Id;
-        
-        TourBooking tourBooking = new TourBooking
-        {
-            Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
-            DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"),
-        };
-        if(tourBooking.Tour != null)
-            tourBooking.TourId = tourBooking.Tour.Id;
-        
+        Room? room = HttpContext.Session.GetObject<Room>("PackageRoom");
+        Tour? tour = HttpContext.Session.GetObject<Tour>("PackageTour");
+
+        RoomBooking? roomBooking = null;
+        TourBooking? tourBooking = null;
+
+        if (room != null){
+            roomBooking = new RoomBooking{
+                Room = room, DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"), DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
+            };
+            if (roomBooking.Room != null)
+                roomBooking.RoomId = roomBooking.Room!.Id;
+        }
+
+        if (tour != null){
+            tourBooking = new TourBooking{
+                Tour = tour, DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"),
+            };
+            if (tourBooking.Tour != null)
+                tourBooking.TourId = tourBooking.Tour.Id;
+        }
+
         Booking booking = new Booking
         {
             CustomerId = CurrentCustomer().Id,
@@ -251,23 +256,21 @@ public class ViewController : Controller
             TotalCost = 0
         };
 
-        if (roomBooking.Room != null)
+        if (room != null && roomBooking != null)
         {
             int days = roomBooking.DateTo.Subtract(roomBooking.DateFrom).Days;
-            booking.TotalCost += roomBooking.Room.Price * days;
+            booking.TotalCost += room.Price * days;
         }
 
-        if (tourBooking.Tour != null)
+        if (tour != null)
         {
-            booking.TotalCost += tourBooking.Tour.Price;
+            booking.TotalCost += tour.Price;
         }
 
-        if (roomBooking.Room != null && tourBooking.Tour != null)
+        if (room != null && tour != null)
         {
-            booking.TotalCost *= 1-(roomBooking.Room.PackageDiscount / 100);
+            booking.TotalCost *= 1 - room.PackageDiscount / 100;
         }
-        
-        Console.WriteLine(booking);
         
         return View(booking);
     }
