@@ -55,7 +55,7 @@
         @if (Model.TotalCost != 0){
             <h2>Deposit to be paid now: £@(Model.TotalCost * 0.2 / 100)</h2>
 
-            @using (Html.BeginForm("MakeDeposit", "Auth", FormMethod.Post)){
+            @using (Html.BeginForm("MakeDeposit", "Booking", FormMethod.Post)){
                 @Html.HiddenFor(model => model.CustomerId)
                 @Html.HiddenFor(model => model.Customer)
         

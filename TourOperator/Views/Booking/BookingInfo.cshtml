@@ -80,12 +80,12 @@
             }
 
             if (!Model.IsForfeit()){
-                <a class="btn btn-primary" asp-controller="View" asp-action="EditBooking" asp-route-bookingId="@Model.Id">
+                <a class="btn btn-primary" asp-controller="Booking" asp-action="EditBooking" asp-route-bookingId="@Model.Id">
                     Edit Booking
                 </a>
 
                 if (Model.IsConfirmed()){
-                    <a class="btn btn-danger" asp-controller="View" asp-action="CancelBooking" asp-route-bookingId="@Model.Id">
+                    <a class="btn btn-danger" asp-controller="Booking" asp-action="CancelBooking" asp-route-bookingId="@Model.Id">
                         Cancel Booking
                     </a>
                 }
@@ -94,7 +94,7 @@
             if (!Model.IsConfirmed() && !Model.IsForfeit()){
                 <h3> Pay by: @Model.StartDate().AddDays(-28).ToShortDate() </h3>
 
-                <a class="btn btn-primary" asp-controller="Auth" asp-action="ConfirmBooking" asp-route-bookingId="@Model.Id">
+                <a class="btn btn-primary" asp-controller="Booking" asp-action="ConfirmBooking" asp-route-bookingId="@Model.Id">
                     Pay and Confirm
                 </a>
             }
