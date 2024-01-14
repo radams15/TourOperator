@@ -229,7 +229,7 @@ public class ViewController : Controller
         RoomBooking roomBooking = new RoomBooking
         {
             Room = HttpContext.Session.GetObject<Room>("PackageRoom"),
-            DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
+            DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"),
             DateTo = HttpContext.Session.GetObject<DateTime>("RoomDateTo"),
         };
         if(roomBooking.Room != null)
@@ -238,7 +238,7 @@ public class ViewController : Controller
         TourBooking tourBooking = new TourBooking
         {
             Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
-            DateFrom = HttpContext.Session.GetObject<DateTime>("TourDateFrom"),
+            DateFrom = HttpContext.Session.GetObject<DateTime>("DateFrom"),
         };
         if(tourBooking.Tour != null)
             tourBooking.TourId = tourBooking.Tour.Id;
@@ -295,12 +295,120 @@ public class ViewController : Controller
     [Authorize]
     public ActionResult<Booking> EditBooking([FromQuery] int bookingId)
     {
-        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking)
+            .Include(b => b.TourBooking)
+            .SingleOrDefault(b => b.Id == bookingId);
 
         if (booking == null)
             return Problem($"Cannot find booking {bookingId}");
         
         return View(booking);
+    }
+    
+    [HttpPost("/booking/edit")]
+    [Authorize]
+    public ActionResult<Booking> CheckEditBooking([FromForm] int bookingId, [FromForm] DateTime from)
+    {
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking)
+                .ThenInclude(rb => rb.Room)
+                    .ThenInclude(r => r.Hotel)
+            .Include(b => b.TourBooking)
+                .ThenInclude(tb => tb.Tour)
+            .SingleOrDefault(b => b.Id == bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+
+        string error = "";
+        
+        if (booking.HasRoom()){
+            int days = (booking.RoomBooking!.DateTo - booking.RoomBooking!.DateFrom).Days;
+            DateTime newTo = from.AddDays(days);
+            
+            IEnumerable<Room> rooms = _availabilitySvc
+                .RoomsBetweenDates(booking.RoomBooking!.Room!.Hotel, from, newTo)
+                .Where(r => r.Id == booking.RoomBooking!.Room!.Id);
+
+            if (rooms.Any()){
+                booking.RoomBooking.DateFrom = from;
+                booking.RoomBooking.DateTo = newTo;
+            }
+            else{
+                error = "Room unavailable";
+            }
+        }
+
+        if (booking.HasTour()){
+            IEnumerable<Tour> tours = _availabilitySvc
+                .ToursBetweenDates(from)
+                .Where(t => t.Id == booking.TourBooking!.Tour!.Id);
+
+            if (tours.Any()){
+                booking.TourBooking!.DateFrom = from;
+            }
+            else{
+                error = "Tour unavailable";
+            }
+        }
+
+        booking.Due += (int) (booking.TotalCost * 0.05f); // 5% surcharge
+        
+        TempData["errormsg"] = error;
+        
+        return View("EditBooking", booking);
+    }
+    
+    [HttpPost("/booking/update")]
+    [Authorize]
+    public ActionResult<Booking> ConfirmEditBooking([FromForm] int bookingId, [FromForm] DateTime from)
+    {
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking)
+            .ThenInclude(rb => rb.Room)
+            .ThenInclude(r => r.Hotel)
+            .Include(b => b.TourBooking)
+            .ThenInclude(tb => tb.Tour)
+            .SingleOrDefault(b => b.Id == bookingId);
+
+        if (booking == null)
+            return Problem($"Cannot find booking {bookingId}");
+        
+        if (booking.HasRoom()){
+            int days = (booking.RoomBooking!.DateTo - booking.RoomBooking!.DateFrom).Days;
+            DateTime newTo = from.AddDays(days);
+            
+            IEnumerable<Room> rooms = _availabilitySvc
+                .RoomsBetweenDates(booking.RoomBooking!.Room!.Hotel, from, newTo)
+                .Where(r => r.Id == booking.RoomBooking!.Room!.Id);
+
+            if (rooms.Any()){
+                booking.RoomBooking.DateFrom = from;
+                booking.RoomBooking.DateTo = newTo;
+            }
+            else{
+                return Problem("Room unavailable");
+            }
+        }
+
+        if (booking.HasTour()){
+            IEnumerable<Tour> tours = _availabilitySvc
+                .ToursBetweenDates(from)
+                .Where(t => t.Id == booking.TourBooking!.Tour!.Id);
+
+            if (tours.Any()){
+                booking.TourBooking!.DateFrom = from;
+            }
+            else{
+                return Problem("Tour unavailable");
+            }
+        }
+        
+        _tourDbContext.Bookings.Update(booking);
+        _tourDbContext.SaveChanges();
+        
+        return Redirect($"/booking?bookingId={bookingId}");
     }
 
     [HttpGet("/customer/bookings")]

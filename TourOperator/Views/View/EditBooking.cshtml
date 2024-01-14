@@ -1,10 +1,45 @@
-﻿@model TourOperator.Models.Entities.Booking
+﻿@using TourOperator.Extensions
+@model TourOperator.Models.Entities.Booking
 
 @{
     ViewData["Title"] = "Editing Booking";
+    
+    string dateNow = DateTime.Now.ToShortDate();
 }
 
 <div class="text-center">
     <h1 class="display-4">Edit</h1>
     
+    @if (Model.HasRoom()){
+        <fieldset>
+            <legend>Change Start Date</legend>
+            
+                @using (Html.BeginForm("CheckEditBooking", "View", FormMethod.Post))
+                {
+                    <input hidden="" name="bookingId" value="@Model.Id"/>
+                    
+                    <label for="from">From</label>
+                    <input type="date" name="from" id="from" class="form-control" value="@Model.StartDate().ToShortDate()" min="@dateNow"/>
+                    
+                    <button type="submit" class="btn btn-primary">Check</button>
+                }
+        </fieldset>
+    }
+    
+    @if (TempData["errormsg"] != ""){
+        <p class="error">@TempData["errormsg"]</p>
+    } else if (TempData["errormsg"] == "") {
+        <h2>Available!</h2>
+        
+        <p>Cost: £@(Model.Due / 100f)</p>
+        
+        @using (Html.BeginForm("ConfirmEditBooking", "View", FormMethod.Post))
+        {
+            <input hidden="" name="bookingId" value="@Model.Id"/>
+            
+            <input hidden="" type="date" name="from" id="from" class="form-control" value="@Model.StartDate().ToShortDate()" min="@dateNow"/>
+            
+            <button type="submit" class="btn btn-primary">Update and Pay</button>
+        }
+    }
 </div>

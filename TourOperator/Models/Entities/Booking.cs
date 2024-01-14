@@ -16,6 +16,21 @@ public class Booking
     public bool DepositPaid { get; set; }
     public int Due { get; set; }
 
+    public bool HasRoom()
+    {
+        return RoomBooking != null;
+    }
+
+    public bool HasTour()
+    {
+        return TourBooking != null;
+    }
+
+    public int GetLengthDays()
+    {
+        return (EndDate() - StartDate()).Days;
+    }
+
     public int GetDaysUntilStart()
     {
         return (StartDate() - DateTime.Now).Days;
@@ -28,6 +43,20 @@ public class Booking
             .Where(d => d != null)
             .OfType<DateTime>()
             .Min();
+    }
+    
+    public DateTime EndDate()
+    {
+        DateTime?[] endDates = { RoomBooking?.DateTo, null };
+
+        if (TourBooking != null){
+            endDates[1] = TourBooking.DateFrom.AddDays(TourBooking!.Tour!.Length);
+        }
+
+        return endDates
+            .Where(d => d != null)
+            .OfType<DateTime>()
+            .Max();
     }
 
     public bool IsConfirmed()

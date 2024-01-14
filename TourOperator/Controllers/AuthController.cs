@@ -91,7 +91,7 @@ INVALID_PASSWORD:
             return Problem($"Could not find room {roomId}");
 
         HttpContext.Session.SetObject("RoomDateTo", toDate.ParseDate());
-        HttpContext.Session.SetObject("RoomDateFrom", fromDate.ParseDate());
+        HttpContext.Session.SetObject("DateFrom", fromDate.ParseDate());
 
         HttpContext.Session.SetObject("PackageRoom", room);
         
@@ -108,7 +108,7 @@ INVALID_PASSWORD:
             return Problem($"Could not find tour {tourId}");
         
         HttpContext.Session.SetObject("PackageTour", tour);
-        HttpContext.Session.SetObject("TourDateFrom", fromDate.ParseDate());
+        HttpContext.Session.SetObject("DateFrom", fromDate.ParseDate());
         
         return Redirect($"/Tour/{tour.Id}?fromDate={fromDate}");
     }
@@ -136,9 +136,9 @@ INVALID_PASSWORD:
     }
     
    
-    [HttpPost("/booking/confirm")]
+    [HttpGet("/booking/confirm")]
     [Authorize]
-    public ActionResult<Booking> ConfirmBooking([FromForm] int bookingId)
+    public ActionResult<Booking> ConfirmBooking([FromQuery] int bookingId)
     {
         Booking? booking = _tourDbContext.Bookings.Find(bookingId);
 
