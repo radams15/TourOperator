@@ -238,7 +238,7 @@ public class ViewController : Controller
         TourBooking tourBooking = new TourBooking
         {
             Tour = HttpContext.Session.GetObject<Tour>("PackageTour"),
-            DateFrom = HttpContext.Session.GetObject<DateTime>("RoomDateFrom"),
+            DateFrom = HttpContext.Session.GetObject<DateTime>("TourDateFrom"),
         };
         if(tourBooking.Tour != null)
             tourBooking.TourId = tourBooking.Tour.Id;
