@@ -1,20 +1,14 @@
-﻿using System.Collections;
+﻿namespace TourOperator.Controllers;
+
+using System.Collections;
 using System.Diagnostics;
-using System.Globalization;
-using System.Text.Json;
+using Contexts;
+using Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Extensions;
-using TourOperator.Models;
-using TourOperator.Models.Entities;
-using TourOperator.Models.Services;
-
-namespace TourOperator.Controllers;
+using Models.Entities;
+using Models.Services;
 
 [Controller]
 [Route("/")]
@@ -37,42 +31,6 @@ public class ViewController : Controller
         return View();
     }
     
-    [HttpGet("login")]
-    public IActionResult Login()
-    {
-        return View();
-    }
-    
-    [HttpGet("register")]
-    public IActionResult Register()
-    {
-        return View(new Customer());
-    }
-    
-    [HttpPost("register")]
-    public ActionResult<Customer> Register([FromForm] Customer customer)
-    {
-        if (ModelState.IsValid)
-        {
-
-            customer.Password = customer.Password.Sha256();
-
-            _tourDbContext.Customers.Add(customer);
-            _tourDbContext.SaveChanges();
-
-            _logger.LogInformation("User {} created.", customer.Username);
-
-            Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Id);
-
-            if (createdCustomer != null)
-                return Redirect("/");
-            
-            return Problem("Failed to create customer");
-        }
-
-        return View(customer);
-    }
-    
     [HttpGet("customer")]
     [Authorize]
     public IActionResult Customer()
@@ -88,18 +46,17 @@ public class ViewController : Controller
         {
             Customer beforeCustomer = CurrentCustomer();
             
-            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+            beforeCustomer.FullName = customer.FullName;
+            beforeCustomer.PhoneNo = customer.PhoneNo;
+            beforeCustomer.PassportNo = customer.PassportNo;
+            beforeCustomer.Password = customer.Password.Sha256();
 
-            customer.Username = beforeCustomer.Username;
-            customer.Password = customer.Password?.Sha256() ?? beforeCustomer.Password;
-            _tourDbContext.Customers.Update(customer);
+            _tourDbContext.Customers.Update(beforeCustomer);
             _tourDbContext.SaveChanges();
-            _logger.LogError("Customer: {}", JsonSerializer.Serialize(customer));
+            
             return View(customer);
         }
         
-        _logger.LogError("Invalid Customer: {}", JsonSerializer.Serialize(customer));
-
         foreach (var value in ModelState.Values)
         {
             if(value.Errors.Count > 0)
@@ -273,192 +230,6 @@ public class ViewController : Controller
         }
         
         return View(booking);
-    }
-    
-    [HttpGet("booking")]
-    public IActionResult BookingInfo([FromQuery] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .Include(b => b.Customer)
-            .Include(b => b.RoomBooking!.Room)
-                .ThenInclude(r => r!.Hotel)
-            .Include(b => b.TourBooking!.Tour)
-            .FirstOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-        
-        if(booking.Customer!.Username != User.Identity!.Name)
-            return Problem($"Cannot load booking not for user {User.Identity!.Name}");
-        
-        return View(booking);
-    }
-    
-    [HttpGet("/booking/edit")]
-    [Authorize]
-    public ActionResult<Booking> EditBooking([FromQuery] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .Include(b => b.RoomBooking)
-            .Include(b => b.TourBooking)
-            .SingleOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-        
-        return View(booking);
-    }
-    
-    [HttpPost("/booking/edit")]
-    [Authorize]
-    public ActionResult<Booking> CheckEditBooking([FromForm] int bookingId, [FromForm] DateTime from)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .Include(b => b.RoomBooking)
-                .ThenInclude(rb => rb.Room)
-                    .ThenInclude(r => r.Hotel)
-            .Include(b => b.TourBooking)
-                .ThenInclude(tb => tb.Tour)
-            .SingleOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-
-        string error = "";
-        
-        if (booking.HasRoom()){
-            int days = (booking.RoomBooking!.DateTo - booking.RoomBooking!.DateFrom).Days;
-            DateTime newTo = from.AddDays(days);
-            
-            IEnumerable<Room> rooms = _availabilitySvc
-                .RoomsBetweenDates(booking.RoomBooking!.Room!.Hotel, from, newTo)
-                .Where(r => r.Id == booking.RoomBooking!.Room!.Id);
-
-            if (rooms.Any()){
-                booking.RoomBooking.DateFrom = from;
-                booking.RoomBooking.DateTo = newTo;
-            }
-            else{
-                error = "Room unavailable";
-            }
-        }
-
-        if (booking.HasTour()){
-            IEnumerable<Tour> tours = _availabilitySvc
-                .ToursBetweenDates(from)
-                .Where(t => t.Id == booking.TourBooking!.Tour!.Id);
-
-            if (tours.Any()){
-                booking.TourBooking!.DateFrom = from;
-            }
-            else{
-                error = "Tour unavailable";
-            }
-        }
-
-        booking.Due += (int) (booking.TotalCost * 0.05f); // 5% surcharge
-        
-        TempData["errormsg"] = error;
-        
-        return View("EditBooking", booking);
-    }
-    
-    [HttpPost("/booking/update")]
-    [Authorize]
-    public ActionResult<Booking> ConfirmEditBooking([FromForm] int bookingId, [FromForm] DateTime from)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .Include(b => b.RoomBooking)
-            .ThenInclude(rb => rb.Room)
-            .ThenInclude(r => r.Hotel)
-            .Include(b => b.TourBooking)
-            .ThenInclude(tb => tb.Tour)
-            .SingleOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-        
-        if (booking.HasRoom()){
-            int days = (booking.RoomBooking!.DateTo - booking.RoomBooking!.DateFrom).Days;
-            DateTime newTo = from.AddDays(days);
-            
-            IEnumerable<Room> rooms = _availabilitySvc
-                .RoomsBetweenDates(booking.RoomBooking!.Room!.Hotel, from, newTo)
-                .Where(r => r.Id == booking.RoomBooking!.Room!.Id);
-
-            if (rooms.Any()){
-                booking.RoomBooking.DateFrom = from;
-                booking.RoomBooking.DateTo = newTo;
-            }
-            else{
-                return Problem("Room unavailable");
-            }
-        }
-
-        if (booking.HasTour()){
-            IEnumerable<Tour> tours = _availabilitySvc
-                .ToursBetweenDates(from)
-                .Where(t => t.Id == booking.TourBooking!.Tour!.Id);
-
-            if (tours.Any()){
-                booking.TourBooking!.DateFrom = from;
-            }
-            else{
-                return Problem("Tour unavailable");
-            }
-        }
-        
-        _tourDbContext.Bookings.Update(booking);
-        _tourDbContext.SaveChanges();
-        
-        return Redirect($"/booking?bookingId={bookingId}");
-    }
-    
-    [HttpGet("/booking/cancel")]
-    [Authorize]
-    public ActionResult<Booking> CancelBooking([FromQuery] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .Include(b => b.RoomBooking)
-            .Include(b => b.TourBooking)
-            .SingleOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-        
-        return View(booking);
-    }
-    
-    [HttpPost("/booking/cancel")]
-    [Authorize]
-    public ActionResult<Booking> ConfirmCancelBooking([FromForm] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings
-            .SingleOrDefault(b => b.Id == bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-
-        booking.Cancelled = true;
-        
-        _tourDbContext.Bookings.Update(booking);
-        _tourDbContext.SaveChanges();
-        
-        return Redirect($"/booking?bookingId={bookingId}");
-    }
-
-    [HttpGet("/customer/bookings")]
-    [Authorize]
-    public ActionResult Bookings()
-    {
-        int customerId = CurrentCustomer().Id;
-        
-        IEnumerable<Booking> bookings = _tourDbContext.Bookings
-            .Include(b => b.RoomBooking!.Room!.Hotel)
-            .Include(b => b.TourBooking!.Tour)
-            .Where(b => b.CustomerId == customerId);
-
-        return View(bookings);
     }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

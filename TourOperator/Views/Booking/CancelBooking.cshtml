@@ -18,7 +18,7 @@
         <p class="error">You will have to pay a £50 administrative charge to cancel as you are due to depart in less than 5 days.</p>
     }
     
-    @using (Html.BeginForm("ConfirmCancelBooking", "View", FormMethod.Post))
+    @using (Html.BeginForm("ConfirmCancelBooking", "Booking", FormMethod.Post))
     {
         <input hidden="" name="bookingId" value="@Model.Id"/>
         

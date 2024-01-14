@@ -1,12 +1,10 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace TourOperator.Models.Entities;
 
 public class Booking
 {
     public int Id { get; set; }
-    public int? CustomerId { get; set; }
-    public Customer? Customer { get; set; }
+    public int CustomerId { get; set; }
+    public Customer Customer { get; set; }
     
     public RoomBooking? RoomBooking { get; set; }
     public TourBooking? TourBooking { get; set; }
@@ -16,8 +14,10 @@ public class Booking
     public bool DepositPaid { get; set; }
     public int Due { get; set; }
 
-    public bool Cancelled { get; set; } = false;
+    public bool Cancelled { get; set; }
 
+    
+    
     public bool HasRoom()
     {
         return RoomBooking != null;

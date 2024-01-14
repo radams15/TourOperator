@@ -14,7 +14,7 @@
         <fieldset>
             <legend>Change Start Date</legend>
             
-                @using (Html.BeginForm("CheckEditBooking", "View", FormMethod.Post))
+                @using (Html.BeginForm("CheckEditBooking", "Booking", FormMethod.Post))
                 {
                     <input hidden="" name="bookingId" value="@Model.Id"/>
                     
@@ -33,7 +33,7 @@
         
         <p>Cost: £@(Model.Due / 100f)</p>
         
-        @using (Html.BeginForm("ConfirmEditBooking", "View", FormMethod.Post))
+        @using (Html.BeginForm("ConfirmEditBooking", "Booking", FormMethod.Post))
         {
             <input hidden="" name="bookingId" value="@Model.Id"/>
             

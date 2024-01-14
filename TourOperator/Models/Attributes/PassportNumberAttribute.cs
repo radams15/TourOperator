@@ -1,7 +1,7 @@
+namespace TourOperator.Models.Attributes;
+
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-
-namespace TourOperator.Models.Attributes;
 
 public class PassportNumberAttribute : ValidationAttribute
 {

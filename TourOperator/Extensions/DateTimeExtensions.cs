@@ -1,6 +1,6 @@
-using System.Globalization;
-
 namespace TourOperator.Extensions;
+
+using System.Globalization;
 
 public static class DateTimeExtensions
 {

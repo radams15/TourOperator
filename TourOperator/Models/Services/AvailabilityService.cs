@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Models.Entities;
-
 namespace TourOperator.Models.Services;
+
+using Contexts;
+using Entities;
+using Microsoft.EntityFrameworkCore;
 
 public class AvailabilityService
 {

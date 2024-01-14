@@ -1,19 +1,15 @@
-﻿using System.Globalization;
+﻿namespace TourOperator.Controllers;
+
 using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
+using Contexts;
+using Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TourOperator.Contexts;
-using TourOperator.Extensions;
-using TourOperator.Models.Entities;
+using Models.Entities;
 
-namespace TourOperator.Controllers;
-
-[ApiController]
+[Controller]
 [Route("/auth")]
 public class AuthController : Controller
 {
@@ -26,16 +22,23 @@ public class AuthController : Controller
         _logger = logger;
     }
 
-    [HttpGet("/logout")]
+    [HttpGet("logout")]
     [Authorize]
     public async Task<ActionResult> Logout()
     {
         _logger.LogInformation("User {} logged out.", User.Identity.Name);
-        
+
         await HttpContext.SignOutAsync(
-            CookieAuthenticationDefaults.AuthenticationScheme);
-        
+        CookieAuthenticationDefaults.AuthenticationScheme);
+
         return Redirect("/");
+    }
+    
+        
+    [HttpGet("login")]
+    public IActionResult Login()
+    {
+        return View();
     }
 
     [HttpPost("login")]
@@ -79,6 +82,36 @@ INVALID_PASSWORD:
         _logger.LogInformation("Failed login, User {}.", username);
         return Problem("Invalid username or password");
     }
+    
+    [HttpGet("register")]
+    public IActionResult Register()
+    {
+        return View(new Customer());
+    }
+    
+    [HttpPost("register")]
+    public ActionResult<Customer> Register([FromForm] Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+
+            customer.Password = customer.Password.Sha256();
+
+            _tourDbContext.Customers.Add(customer);
+            _tourDbContext.SaveChanges();
+
+            _logger.LogInformation("User {} created.", customer.Username);
+
+            Customer? createdCustomer = _tourDbContext.Customers.Find(customer.Id);
+
+            if (createdCustomer != null)
+                return Redirect("/");
+            
+            return Problem("Failed to create customer");
+        }
+
+        return View(customer);
+    }
 
 
     [HttpPost("room/addToPackage")]
@@ -111,40 +144,5 @@ INVALID_PASSWORD:
         HttpContext.Session.SetObject("DateFrom", fromDate.ParseDate());
         
         return Redirect($"/Tour/{tour.Id}?fromDate={fromDate}");
-    }
-
-    [HttpPost("/deposit")]
-    [Authorize]
-    public ActionResult<Booking> MakeDeposit([FromForm] Booking booking)
-    {
-        booking.DepositPaid = true;
-        booking.Customer = _tourDbContext.Customers.Single(c => c.Id == booking.CustomerId);
-        booking.Due = (int) (booking.TotalCost * 0.8);
-        booking.DateBooked = DateTime.Now;
-
-        _tourDbContext.Bookings.Add(booking);
-
-        _tourDbContext.SaveChanges();
-        
-        return Redirect($"/booking?bookingId={booking.Id}");
-    }
-    
-   
-    [HttpGet("/booking/confirm")]
-    [Authorize]
-    public ActionResult<Booking> ConfirmBooking([FromQuery] int bookingId)
-    {
-        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
-
-        if (booking == null)
-            return Problem($"Cannot find booking {bookingId}");
-
-        booking.Due = 0;
-        
-        _tourDbContext.Bookings.Update(booking);
-
-        _tourDbContext.SaveChanges();
-        
-        return Redirect($"/booking?bookingId={booking.Id}");
     }
 }

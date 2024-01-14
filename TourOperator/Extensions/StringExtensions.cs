@@ -1,7 +1,7 @@
+namespace TourOperator.Extensions;
+
 using System.Security.Cryptography;
 using System.Text;
-
-namespace TourOperator.Extensions;
 
 public static class StringExtensions
 {
