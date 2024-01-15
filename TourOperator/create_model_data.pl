@@ -69,7 +69,7 @@ while(my ($name, $info) = each %users) {
     my $roleVar = $role."Role";
     $content .= <<END;
 modelBuilder.Entity<Customer>().HasData(
-    new Customer{Id = $id, RoleId = $roleVar.Id, Username = "$username", Password = "$password", PassportNo = "$passport", PhoneNo = "$phone"}
+    new Customer{Id = $id, RoleId = $roleVar.Id, Username = "$username", FullName = "$name", Password = "$password", PassportNo = "$passport", PhoneNo = "$phone"}
 );
 END
     $id++;
