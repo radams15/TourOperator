@@ -61,6 +61,11 @@ public class Booking
             .Max();
     }
 
+    public bool ContainsDate(DateTime date)
+    {
+        return date >= StartDate() && date < EndDate();
+    }
+
     public bool IsConfirmed()
     {
         return Due == 0;

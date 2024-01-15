@@ -1,4 +1,5 @@
 ﻿@using TourOperator.Extensions
+@using TourOperator.Models.Entities
 @model TourOperator.Models.Entities.Report?
 
 @{
@@ -34,5 +35,36 @@
     
     @if (Model != null){
         
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Bookings</th>
+            </tr>
+            
+            @foreach(var bookings in Model.Bookings)
+            {
+                <tr>
+                    <td>
+                        @bookings.Key.ToShortDate()
+                    </td>
+                    
+                    <td>
+                        <ul>
+                            @foreach(var booking in bookings.Value){
+                                <li>
+                                    @if (booking.HasRoom()){
+                                        <p>@booking.RoomBooking?.Room.Hotel.Name => @booking.RoomBooking?.Room.Name</p>
+                                    }
+
+                                    @if (booking.HasTour()){
+                                        <p>@booking.TourBooking?.Tour.Name</p>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+            }
+        </table>
     }
 </div>
