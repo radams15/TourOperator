@@ -56,8 +56,8 @@ public class AuthController : Controller
 
         var claims = new List<Claim>
         {
-            new (ClaimTypes.Name, existing.Username),
-            new (ClaimTypes.Role, RoleName.Customer),
+            new Claim(ClaimTypes.Name, existing.Username),
+            new Claim(ClaimTypes.Role, RoleName.Customer),
         };
 
         var claimsIdentity = new ClaimsIdentity(

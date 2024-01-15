@@ -8,6 +8,10 @@ public class Customer
 {
     public int Id { get; set; }
     
+    public int RoleId { get; set; }
+    
+    public Role Role { get; set; }
+    
     [StringLength(32, MinimumLength = 4)]
     [DisplayName("Username")]
     public string Username { get; set; } = "";

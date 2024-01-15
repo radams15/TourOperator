@@ -12,6 +12,8 @@ public class TourDbContext : DbContext
     public DbSet<Room> Rooms { get; set; }
     public DbSet<Tour> Tours { get; set; }
     
+    public DbSet<Role> Roles { get; set; }
+    
     public TourDbContext(DbContextOptions<TourDbContext> options)
         : base(options)
     {

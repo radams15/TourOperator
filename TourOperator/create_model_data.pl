@@ -22,6 +22,15 @@ END
 
 my $room_spaces = 20;
 
+my %roles = (
+    'customer' => 'RoleName.Customer',
+    'manager' => 'RoleName.Manager'
+);
+
+my %users = (
+    'Rhys Adams' => ['rhys', 'customer', 'd74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1', '241221421241', '634644638643']
+);
+
 my %tours = (
     'Real Britain' => ['a tour', 6, 1200, 30],
     'Britain and Ireland Explorer' => ['a tour', 16, 2000, 40],
@@ -39,13 +48,34 @@ my %hotels = (
 
 my $content = "\t\t";
 
-$content .= <<END;
+my $id=1;
+
+$id=1;
+while(my ($name, $value) = each %roles) {
+    my $var = $name."Role";
+    $content .= <<END;
+Role $var = new Role{
+    Id = $id, Name = $value
+};
+
+modelBuilder.Entity<Role>().HasData($var);
+END
+    $id++;
+}
+
+$id=1;
+while(my ($name, $info) = each %users) {
+    my ($username, $role, $password, $passport, $phone) = @$info;
+    my $roleVar = $role."Role";
+    $content .= <<END;
 modelBuilder.Entity<Customer>().HasData(
-    new Customer{Id = 1, Username = "rhys", Password = "d74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1"}
+    new Customer{Id = $id, RoleId = $roleVar.Id, Username = "$username", Password = "$password", PassportNo = "$passport", PhoneNo = "$phone"}
 );
 END
+    $id++;
+}
 
-my $id=1;
+$id=1;
 $content .= "\nmodelBuilder.Entity<Tour>().HasData(";
 while(my ($name, $info) = each(%tours)) {
     my ($description, $length, $cost, $spaces) = @$info;
