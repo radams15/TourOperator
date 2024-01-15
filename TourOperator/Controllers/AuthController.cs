@@ -95,6 +95,8 @@ INVALID_PASSWORD:
     [HttpPost("register")]
     public ActionResult<Customer> Register([FromForm] Customer customer)
     {
+        ModelState.Remove(ModelState.Keys.First(key => key == "Role"));
+        
         if (ModelState.IsValid) {
             customer.Role = _tourDbContext.Roles
                 .Where(r => r.Name == RoleName.Customer)
@@ -114,6 +116,13 @@ INVALID_PASSWORD:
             
             return Problem("Failed to create customer");
         }
+        
+        ModelState.Select(x => x.Value.Errors)
+            .Where(y=>y.Count>0)
+            .ToList()
+            .ForEach(error => {
+                _logger.LogError("Validation error: {0}", error.Select(x => x.ErrorMessage));
+            });
 
         return View(customer);
     }
