@@ -249,6 +249,23 @@ public class ViewController : Controller
             .ThenInclude(r => r.Hotel)
             .Include(b => b.TourBooking)
             .ThenInclude(tb => tb.Tour);
+
+        report.DefaultTourAvailability = new Report.Availability<Tour>();
+        report.DefaultRoomAvailability = new Report.Availability<Room>();
+
+        foreach(Room room in _tourDbContext.Rooms.Include(r => r.Hotel)){
+            report.DefaultRoomAvailability.Add(
+                room,
+                room.Spaces
+            );
+        }
+        
+        foreach(Tour tour in _tourDbContext.Tours){
+            report.DefaultTourAvailability.Add(
+                tour,
+                tour.Spaces
+            );
+        }
         
         return View("ManagerReport", report);
     }
