@@ -34,6 +34,30 @@
         fromDate = now;
         toDate = now;
     }
+
+    void PrintRoomAvailability(Report.Availability<Room> roomAvailability)
+    {
+        <p>Rooms</p>
+        <ul>
+            @foreach(var availability in roomAvailability){
+                <li>
+                    @availability.Key.Hotel.Name @@ @availability.Key.Name => @availability.Value places
+                </li>
+            }
+        </ul> 
+    }
+    
+    void PrintTourAvailability(Report.Availability<Tour> tourAvailability)
+    {
+        <p>Tours</p>
+        <ul>
+            @foreach(var availability in tourAvailability){
+                <li>
+                    @availability.Key.Name => @availability.Value places
+                </li>
+            }
+        </ul> 
+    }
 }
 
 <div class="text-center">
@@ -59,7 +83,7 @@
             </tr>
             
             @if (bookingsByDate != null){
-                foreach(var bookings in bookingsByDate){
+                foreach(var bookings in bookingsByDate) {
                     <tr>
                         <td>
                             @bookings.Key.ToShortDate()
@@ -67,46 +91,27 @@
 
                         <td>
                             @if (bookings.Value.Any()){
-                                <p>Tours:</p>
-                                <ul>
-                                    @foreach(var booking in bookings.Value){
-                                        <li>
-                                            @if (booking.HasTour()){
-                                                <p>@booking.TourBooking?.Tour.Name</p>
+                                {
+                                    Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability?.Duplicate() ?? new();
+                                    Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability?.Duplicate() ?? new();
+                                    
+                                    foreach(var booking in bookings.Value){
+                                            if (booking.HasTour()){
+                                                tourAvailability[booking.TourBooking!.Tour] -= 1;
                                             }
-                                        </li>
-                                    }
-                                </ul>
-                                
-                                <p>Rooms</p>
-                                <ul>
-                                    @foreach(var booking in bookings.Value){
-                                        <li>
-                                            @if (booking.HasRoom()){
-                                                <p>@booking.RoomBooking?.Room.Hotel.Name => @booking.RoomBooking?.Room.Name</p>
+                                            
+                                            if (booking.HasRoom()){
+                                                roomAvailability[booking.RoomBooking!.Room] -= 1;
                                             }
-                                        </li>
                                     }
-                                </ul>
+                                    
+                                    PrintRoomAvailability(roomAvailability);
+                                    PrintTourAvailability(tourAvailability);
+                                }
                             }
                             else{
-                                <p>Tours:</p>
-                                <ul>
-                                    @foreach(var availability in Model.DefaultTourAvailability){
-                                        <li>
-                                            @availability.Key.Name => @availability.Value places
-                                        </li>
-                                    }
-                                </ul>
-                                
-                                <p>Rooms</p>
-                                <ul>
-                                    @foreach(var availability in Model.DefaultRoomAvailability){
-                                        <li>
-                                            @availability.Key.Hotel.Name @@ @availability.Key.Name => @availability.Value places
-                                        </li>
-                                    }
-                                </ul> 
+                                PrintRoomAvailability(Model.DefaultRoomAvailability);
+                                PrintTourAvailability(Model.DefaultTourAvailability);
                             }
                         </td>
                     </tr>
