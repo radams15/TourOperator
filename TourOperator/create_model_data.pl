@@ -28,7 +28,8 @@ my %roles = (
 );
 
 my %users = (
-    'Rhys Adams' => ['rhys', 'customer', 'd74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1', '241221421241', '634644638643']
+    'Rhys Adams' => ['rhys', 'customer', 'd74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1', '241221421241', '634644638643'],
+    'Manager' => ['manager', 'manager', 'd74ff0ee8da3b9806b18c877dbf29bbde50b5bd8e4dad7a3a725000feb82e8f1', '123123123', '123123123']
 );
 
 my %tours = (

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.Entities;
 
 [Controller]
@@ -44,7 +45,9 @@ public class AuthController : Controller
     [HttpPost("login")]
     public async Task<ActionResult> Login([FromForm] string username, [FromForm] string password)
     {
-        Customer? existing = _tourDbContext.Customers.SingleOrDefault(c => c.Username == username);
+        Customer? existing = _tourDbContext.Customers
+            .Include(c => c.Role)
+            .SingleOrDefault(c => c.Username == username);
 
         if (existing == null)
             goto INVALID_PASSWORD;
@@ -57,7 +60,7 @@ public class AuthController : Controller
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, existing.Username),
-            new Claim(ClaimTypes.Role, RoleName.Customer),
+            new Claim(ClaimTypes.Role, existing.Role.Name),
         };
 
         var claimsIdentity = new ClaimsIdentity(
@@ -92,9 +95,11 @@ INVALID_PASSWORD:
     [HttpPost("register")]
     public ActionResult<Customer> Register([FromForm] Customer customer)
     {
-        if (ModelState.IsValid)
-        {
-
+        if (ModelState.IsValid) {
+            customer.Role = _tourDbContext.Roles
+                .Where(r => r.Name == RoleName.Customer)
+                .SingleOrDefault();
+            
             customer.Password = customer.Password.Sha256();
 
             _tourDbContext.Customers.Add(customer);
