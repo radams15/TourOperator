@@ -38,14 +38,14 @@
                 </ul>
 
                 @if(User.Identity!.IsAuthenticated) {
+                    @if (User.IsInRole(RoleName.Manager))
+                    {
+                        <a class="nav-link text-dark" asp-controller="View" asp-action="ManagerReport">Reports</a>
+                    }
+                    
                     <a class="nav-link text-dark" asp-area="" asp-controller="View" asp-action="Checkout">Checkout <i class="bi bi-basket"></i></a>
                     <a class="nav-link text-dark" asp-controller="View" asp-action="Customer">Logged in as: @User.Identity!.Name</a>
                     <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
-
-                    @if (User.IsInRole(RoleName.Manager))
-                    {
-                        <a class="nav-link text-dark" asp-area="">Manager</a>
-                    }
                 }
                 else
                 {

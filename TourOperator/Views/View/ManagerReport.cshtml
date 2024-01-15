@@ -19,14 +19,15 @@
 
         bookingsByDate = new Dictionary<DateTime, List<Booking>>();
 
-        for (var day = fromDate; day.Date <= toDate; day = day.AddDays(1)){
+        for (var day = fromDate; day.Date <= toDate; day = day.AddDays(1)) {
             bookingsByDate.Add(day, new List<Booking>());
         }
 
         foreach(Booking booking in Model.Bookings)
         {
-            for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)){
-                bookingsByDate[day].Add(booking);
+            for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)) {
+                if(bookingsByDate.Keys.Contains(day))
+                    bookingsByDate[day].Add(booking);
             }
         }
     }
