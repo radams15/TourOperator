@@ -37,7 +37,7 @@
 
     void PrintRoomAvailability(Report.Availability<Room> roomAvailability)
     {
-        <p>Rooms</p>
+        <p>Rooms:</p>
         <ul>
             @foreach(var availability in roomAvailability){
                 <li>
@@ -49,7 +49,7 @@
     
     void PrintTourAvailability(Report.Availability<Tour> tourAvailability)
     {
-        <p>Tours</p>
+        <p>Tours:</p>
         <ul>
             @foreach(var availability in tourAvailability){
                 <li>
@@ -91,6 +91,20 @@
 
                         <td>
                             @if (bookings.Value.Any()){
+                                <p>Bookings:</p>
+                                
+                                <ul>
+                                    @foreach(var booking in bookings.Value){
+                                        if (booking.HasTour()){
+                                            <li>@booking.TourBooking?.Tour.Name</li>
+                                        }
+                                                
+                                        if (booking.HasRoom()){
+                                            <li>@booking.RoomBooking?.Room.Hotel.Name at @booking.RoomBooking?.Room.Name</li>
+                                        }
+                                    }
+                                </ul>
+                                
                                 {
                                     Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability?.Duplicate() ?? new();
                                     Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability?.Duplicate() ?? new();
