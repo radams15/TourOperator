@@ -231,6 +231,20 @@ public class ViewController : Controller
         
         return View(booking);
     }
+
+    [HttpGet("report")]
+    [Authorize(Roles = RoleName.Manager)]
+    public IActionResult ManagerReport()
+    {
+        return View();
+    }
+    
+    [HttpPost("report")]
+    [Authorize(Roles = RoleName.Manager)]
+    public IActionResult GenerateReport([FromForm] Report report)
+    {
+        return View("ManagerReport", report);
+    }
     
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     [Route("error")]

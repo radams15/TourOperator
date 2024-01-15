@@ -2,6 +2,6 @@ namespace TourOperator.Models.Entities;
 
 public static class RoleName
 {
-    public static readonly string Customer = "CUSTOMER";
-    public static readonly string Manager = "MANAGER";
+    public const string Customer = "CUSTOMER";
+    public const string Manager = "MANAGER";
 }

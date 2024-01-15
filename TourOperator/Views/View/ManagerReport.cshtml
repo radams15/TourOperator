@@ -1,0 +1,38 @@
+﻿@using TourOperator.Extensions
+@model TourOperator.Models.Entities.Report?
+
+@{
+    ViewData["Title"] = "Report";
+
+    DateTime fromDate;
+    DateTime toDate;
+    DateTime now = DateTime.Now;
+    
+    if (Model != null){
+        fromDate = Model.FromDate;
+        toDate = Model.ToDate;
+    }
+    else{
+        fromDate = now;
+        toDate = now;
+    }
+}
+
+<div class="text-center">
+    <h1 class="display-4">Report</h1>
+    
+    @using (Html.BeginForm("GenerateReport", "View", FormMethod.Post))
+    {
+        <label for="from">From</label>
+        <input type="date" name="FromDate" id="from" class="form-control" value="@fromDate.ToShortDate()" min="@now.ToShortDate()"/>
+        
+        <label for="to">To</label>
+        <input type="date" name="ToDate" id="to" class="form-control" value="@toDate.ToShortDate()" min="@now.ToShortDate()" />
+        
+        <button type="submit" class="btn btn-primary">Generate</button>
+    }
+    
+    @if (Model != null){
+        
+    }
+</div>
