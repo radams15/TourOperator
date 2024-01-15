@@ -8,10 +8,25 @@
     DateTime fromDate;
     DateTime toDate;
     DateTime now = DateTime.Now;
+
+    Dictionary<DateTime, List<Booking>> bookingsByDate = null;
     
     if (Model != null){
         fromDate = Model.FromDate;
         toDate = Model.ToDate;
+
+        bookingsByDate = new Dictionary<DateTime, List<Booking>>();
+
+        for (var day = fromDate; day.Date <= toDate; day = day.AddDays(1)){
+            bookingsByDate.Add(day, new List<Booking>());
+        }
+
+        foreach(Booking booking in Model.Bookings)
+        {
+            for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)){
+                bookingsByDate[day].Add(booking);
+            }
+        }
     }
     else{
         fromDate = now;
@@ -41,30 +56,31 @@
                 <th>Bookings</th>
             </tr>
             
-            @foreach(var bookings in Model.Bookings)
-            {
-                <tr>
-                    <td>
-                        @bookings.Key.ToShortDate()
-                    </td>
-                    
-                    <td>
-                        <ul>
-                            @foreach(var booking in bookings.Value){
-                                <li>
-                                    @if (booking.HasRoom()){
-                                        <p>@booking.RoomBooking?.Room.Hotel.Name => @booking.RoomBooking?.Room.Name</p>
-                                    }
+            @if (bookingsByDate != null){
+                foreach(var bookings in bookingsByDate){
+                    <tr>
+                        <td>
+                            @bookings.Key.ToShortDate()
+                        </td>
 
-                                    @if (booking.HasTour()){
-                                        <p>@booking.TourBooking?.Tour.Name</p>
-                                    }
-                                </li>
-                            }
-                        </ul>
-                    </td>
-                </tr>
+                        <td>
+                            <ul>
+                                @foreach(var booking in bookings.Value){
+                                    <li>
+                                        @if (booking.HasRoom()){
+                                            <p>@booking.RoomBooking?.Room.Hotel.Name => @booking.RoomBooking?.Room.Name</p>
+                                        }
+
+                                        @if (booking.HasTour()){
+                                            <p>@booking.TourBooking?.Tour.Name</p>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                }
             }
-        </table>
+    </table>
     }
 </div>

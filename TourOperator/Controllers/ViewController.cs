@@ -243,23 +243,12 @@ public class ViewController : Controller
     [Authorize(Roles = RoleName.Manager)]
     public IActionResult GenerateReport([FromForm] Report report)
     {
-        report.Bookings = new Dictionary<DateTime, IEnumerable<Booking>>();
-        
-        for (var day = report.FromDate.Date; day.Date <= report.ToDate.Date; day = day.AddDays(1)){
-            DateTime innerDate = day;
-            IEnumerable<Booking> bookings = _tourDbContext.Bookings
-                .Include(b => b.RoomBooking)
-                .ThenInclude(rb => rb.Room)
-                .ThenInclude(r => r.Hotel)
-                .Include(b => b.TourBooking)
-                .ThenInclude(tb => tb.Tour)
-                .ToList()
-                .Where(b => b.ContainsDate(innerDate));
-            
-            if(bookings.Any())
-                report.Bookings.Add(day, bookings);
-        }
-            
+        report.Bookings = _tourDbContext.Bookings
+            .Include(b => b.RoomBooking)
+            .ThenInclude(rb => rb.Room)
+            .ThenInclude(r => r.Hotel)
+            .Include(b => b.TourBooking)
+            .ThenInclude(tb => tb.Tour);
         
         return View("ManagerReport", report);
     }
