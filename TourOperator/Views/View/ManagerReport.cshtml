@@ -8,56 +8,48 @@
     DateTime fromDate;
     DateTime toDate;
     DateTime now = DateTime.Now;
-
-    Dictionary<DateTime, List<Booking>>? bookingsByDate = null;
-
-    Dictionary<Room, int>? defaultRoomAvailability = null;
     
     if (Model != null){
+        // There is a report that has been generated.
+        
         fromDate = Model.FromDate;
         toDate = Model.ToDate;
-
-        bookingsByDate = new Dictionary<DateTime, List<Booking>>();
-
-        for (var day = fromDate; day.Date <= toDate; day = day.AddDays(1)) {
-            bookingsByDate.Add(day, new List<Booking>());
-        }
-
-        foreach(Booking booking in Model.Bookings)
-        {
-            for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)) {
-                if(bookingsByDate.Keys.Contains(day))
-                    bookingsByDate[day].Add(booking);
-            }
-        }
     }
     else{
         fromDate = now;
         toDate = now;
     }
 
-    void PrintRoomAvailability(Report.Availability<Room> roomAvailability)
+    void PrintRoomAvailability(Report.Availability<Room>? roomAvailability)
     {
-        <p>Rooms:</p>
-        <ul>
-            @foreach(var availability in roomAvailability){
-                <li>
-                    @availability.Key.Hotel.Name @@ @availability.Key.Name => @availability.Value places
-                </li>
-            }
-        </ul> 
+        // Print availability of all rooms on a date
+        
+        if (roomAvailability != null) {
+            <p>Rooms:</p>
+            <ul>
+                @foreach(var availability in roomAvailability){
+                    <li>
+                        @availability.Key.Hotel.Name @@ @availability.Key.Name => @availability.Value places
+                    </li>
+                }
+            </ul>
+        }
     }
     
-    void PrintTourAvailability(Report.Availability<Tour> tourAvailability)
+    void PrintTourAvailability(Report.Availability<Tour>? tourAvailability)
     {
-        <p>Tours:</p>
-        <ul>
-            @foreach(var availability in tourAvailability){
-                <li>
-                    @availability.Key.Name => @availability.Value places
-                </li>
-            }
-        </ul> 
+        // Print availability of all tours on a date
+        
+        if (tourAvailability != null) {
+            <p>Tours:</p>
+            <ul>
+                @foreach(var availability in tourAvailability){
+                    <li>
+                        @availability.Key.Name => @availability.Value places
+                    </li>
+                }
+            </ul>
+        }
     }
 }
 
@@ -83,8 +75,8 @@
                 <th>Bookings</th>
             </tr>
             
-            @if (bookingsByDate != null){
-                foreach(var bookings in bookingsByDate) {
+            @if (Model.BookingsByDate != null){
+                foreach(var bookings in Model.BookingsByDate) {
                     <tr>
                         <td>
                             @bookings.Key.ToShortDate()
@@ -96,6 +88,8 @@
                                 
                                 <ul>
                                     @foreach(var booking in bookings.Value){
+                                        // Show each booking for the date
+                                        
                                         if (booking.HasTour()){
                                             <li>@booking.TourBooking?.Tour.Name</li>
                                         }
@@ -105,23 +99,28 @@
                                         }
                                     }
                                 </ul>
-                                
+
                                 {
-                                    Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability?.Duplicate() ?? new();
-                                    Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability?.Duplicate() ?? new();
-                                    
-                                    foreach(var booking in bookings.Value){
+                                    if (Model.DefaultRoomAvailability != null && Model.DefaultTourAvailability != null){
+                                        Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability.Duplicate();
+                                        Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability.Duplicate();
+
+                                        // Calculate remaining availability by subtracting this date's bookings from the default
+                                        // availability.
+
+                                        foreach(var booking in bookings.Value){
                                             if (booking.HasTour()){
                                                 tourAvailability[booking.TourBooking!.Tour] -= 1;
                                             }
-                                            
+
                                             if (booking.HasRoom()){
                                                 roomAvailability[booking.RoomBooking!.Room] -= 1;
                                             }
+                                        }
+
+                                        PrintRoomAvailability(roomAvailability);
+                                        PrintTourAvailability(tourAvailability);
                                     }
-                                    
-                                    PrintRoomAvailability(roomAvailability);
-                                    PrintTourAvailability(tourAvailability);
                                 }
                             }
                             else{

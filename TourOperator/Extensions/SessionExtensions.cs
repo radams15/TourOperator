@@ -2,6 +2,10 @@ namespace TourOperator.Extensions;
 
 using System.Text.Json;
 
+/// <summary>
+/// Extension to ISession to allow serialising and deserialising
+/// to JSON.
+/// </summary>
 public static class SessionExtensions
 {
     public static void SetObject(this ISession session, string key, object value)
