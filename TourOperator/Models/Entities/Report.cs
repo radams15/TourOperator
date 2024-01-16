@@ -20,6 +20,8 @@ public class Report {
 
     public IEnumerable<Booking>? Bookings { get; set; }
 
+    public Dictionary<DateTime, List<Booking>>? BookingsByDate { get; set; }
+
     public Availability<Room>? DefaultRoomAvailability { get; set; }
     public Availability<Tour>? DefaultTourAvailability { get; set; }
 }

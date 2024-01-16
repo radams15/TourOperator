@@ -338,6 +338,22 @@ public class ViewController : Controller
             );
         }
         
+        // Generate the bookings by date they are on for the view.
+        
+        report.BookingsByDate = new Dictionary<DateTime, List<Booking>>();
+
+        for (var day = report.FromDate; day.Date <= report.ToDate; day = day.AddDays(1)) {
+            report.BookingsByDate.Add(day, new List<Booking>());
+        }
+
+        foreach(Booking booking in report.Bookings)
+        {
+            for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)) {
+                if(report.BookingsByDate.Keys.Contains(day))
+                    report.BookingsByDate[day].Add(booking);
+            }
+        }
+        
         return View("ManagerReport", report);
     }
     
