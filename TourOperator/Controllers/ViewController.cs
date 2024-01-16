@@ -313,7 +313,8 @@ public class ViewController : Controller
             .ThenInclude(rb => rb.Room)
             .ThenInclude(r => r.Hotel)
             .Include(b => b.TourBooking)
-            .ThenInclude(tb => tb.Tour);
+            .ThenInclude(tb => tb.Tour)
+            .Where(b => ! b.Cancelled);
 
         
         report.DefaultTourAvailability = new Report.Availability<Tour>();
