@@ -22,6 +22,8 @@
 
     void PrintRoomAvailability(Report.Availability<Room>? roomAvailability)
     {
+        // Print availability of all rooms on a date
+        
         if (roomAvailability != null) {
             <p>Rooms:</p>
             <ul>
@@ -36,6 +38,8 @@
     
     void PrintTourAvailability(Report.Availability<Tour>? tourAvailability)
     {
+        // Print availability of all tours on a date
+        
         if (tourAvailability != null) {
             <p>Tours:</p>
             <ul>
@@ -84,6 +88,8 @@
                                 
                                 <ul>
                                     @foreach(var booking in bookings.Value){
+                                        // Show each booking for the date
+                                        
                                         if (booking.HasTour()){
                                             <li>@booking.TourBooking?.Tour.Name</li>
                                         }
@@ -93,23 +99,28 @@
                                         }
                                     }
                                 </ul>
-                                
+
                                 {
-                                    Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability?.Duplicate() ?? new();
-                                    Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability?.Duplicate() ?? new();
-                                    
-                                    foreach(var booking in bookings.Value){
+                                    if (Model.DefaultRoomAvailability != null && Model.DefaultTourAvailability != null){
+                                        Report.Availability<Room> roomAvailability = Model.DefaultRoomAvailability.Duplicate();
+                                        Report.Availability<Tour> tourAvailability = Model.DefaultTourAvailability.Duplicate();
+
+                                        // Calculate remaining availability by subtracting this date's bookings from the default
+                                        // availability.
+
+                                        foreach(var booking in bookings.Value){
                                             if (booking.HasTour()){
                                                 tourAvailability[booking.TourBooking!.Tour] -= 1;
                                             }
-                                            
+
                                             if (booking.HasRoom()){
                                                 roomAvailability[booking.RoomBooking!.Room] -= 1;
                                             }
+                                        }
+
+                                        PrintRoomAvailability(roomAvailability);
+                                        PrintTourAvailability(tourAvailability);
                                     }
-                                    
-                                    PrintRoomAvailability(roomAvailability);
-                                    PrintTourAvailability(tourAvailability);
                                 }
                             }
                             else{

@@ -319,6 +319,7 @@ public class ViewController : Controller
         report.DefaultTourAvailability = new Report.Availability<Tour>();
         report.DefaultRoomAvailability = new Report.Availability<Room>();
 
+        
         // Generate default availability for both rooms and tours.
         // We only calculate this once, and when there are bookings on a day
         // we can subtract the number of hotel/room bookings from the default,
@@ -338,16 +339,20 @@ public class ViewController : Controller
             );
         }
         
+        
         // Generate the bookings by date they are on for the view.
         
         report.BookingsByDate = new Dictionary<DateTime, List<Booking>>();
 
         for (var day = report.FromDate; day.Date <= report.ToDate; day = day.AddDays(1)) {
+            // Populate dictionary with all days between start and end dates.
             report.BookingsByDate.Add(day, new List<Booking>());
         }
 
         foreach(Booking booking in report.Bookings)
         {
+            // For all bookings, if their days are in the report range add their items to the BookingsByDate
+            // dictionary on each day.
             for (var day = booking.StartDate(); day.Date <= booking.EndDate(); day = day.AddDays(1)) {
                 if(report.BookingsByDate.Keys.Contains(day))
                     report.BookingsByDate[day].Add(booking);
