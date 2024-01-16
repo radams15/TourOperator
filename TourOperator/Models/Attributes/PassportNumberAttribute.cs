@@ -3,6 +3,9 @@ namespace TourOperator.Models.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 
+/// <summary>
+/// Custom passport number validation using regular expressions.
+/// </summary>
 public class PassportNumberAttribute : ValidationAttribute
 {
     private static readonly string ValidationRegex = @"^(?!^0+$)[a-zA-Z0-9]{3,20}$";
