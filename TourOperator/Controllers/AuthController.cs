@@ -168,7 +168,7 @@ INVALID_PASSWORD:
     /// <param name="roomId">Id of the room to add</param>
     /// <param name="fromDate">Start date as yyyy-mm-dd</param>
     /// <param name="toDate">End date as yyyy-mm-dd</param>
-    /// <returns>Success: Redirect to the page of the room hotel. Error: Error message when room id invalid</returns>
+    /// <returns>Success: Redirect to the page of the room hotel. Failure: Error message when room id invalid</returns>
     [HttpPost("room/addToPackage")]
     [Authorize]
     public ActionResult AddRoomToPackage([FromForm] int roomId, [FromForm] string fromDate, [FromForm] string toDate)
@@ -191,7 +191,7 @@ INVALID_PASSWORD:
     /// </summary>
     /// <param name="tourId">Id of the tour to add</param>
     /// <param name="fromDate">Start date as yyyy-mm-dd</param>
-    /// <returns>Success: Redirect to the page of the tour. Error: Error message when tour id invalid</returns>
+    /// <returns>Success: Redirect to the page of the tour. Failure: Error message when tour id invalid</returns>
     [HttpPost("tour/addToPackage")]
     [Authorize]
     public ActionResult AddTourToPackage([FromForm] int tourId, [FromForm] string fromDate)
