@@ -3,6 +3,12 @@ namespace TourOperator.Models.Entities;
 public class Report {
     public class Availability<T> : Dictionary<T, int>
     {
+        /// <summary>
+        /// Duplicate the availability dictionary.
+        /// This is needed as we keep subtracting from the dictionary
+        /// values, but these need to be reset each time.
+        /// </summary>
+        /// <returns>Duplicate availability dictionary</returns>
         public Availability<T> Duplicate()
         {
             Availability<T> ret = new ();
