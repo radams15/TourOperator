@@ -32,6 +32,10 @@ public class BookingController : Controller
     [Authorize]
     public ActionResult<Booking> MakeDeposit([FromForm] Booking booking)
     {
+        // Don't show bookings from other users.
+        if(booking.Customer!.Username != User.Identity!.Name)
+            return Problem($"Cannot load booking not for user {User.Identity!.Name}");
+
         // Set the booking information, set the due amount.
         booking.DepositPaid = true;
         booking.Customer = _tourDbContext.Customers.Single(c => c.Id == booking.CustomerId);
@@ -59,6 +63,10 @@ public class BookingController : Controller
 
         if (booking == null)
             return Problem($"Cannot find booking {bookingId}");
+        
+        // Don't show bookings from other users.
+        if(booking.Customer!.Username != User.Identity!.Name)
+            return Problem($"Cannot load booking not for user {User.Identity!.Name}");
 
         // All due paid off
         booking.Due = 0;
@@ -111,6 +119,7 @@ public class BookingController : Controller
     /// <param name="bookingId">Id of the booking to examine</param>
     /// <returns>Success: booking info page. Failure: 500 error with message.</returns>
     [HttpGet]
+    [Authorize]
     public IActionResult BookingInfo([FromQuery] int bookingId)
     {
         // Load booking, including all relevant fields such as Room, Tour, Hotel.
