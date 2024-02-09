@@ -55,7 +55,9 @@ public class BookingController : Controller
     [Authorize]
     public ActionResult<Booking> ConfirmBooking([FromQuery] int bookingId)
     {
-        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.Customer)
+            .SingleOrDefault(b => b.Id == bookingId);
 
         if (booking == null)
             return Problem($"Cannot find booking {bookingId}");
