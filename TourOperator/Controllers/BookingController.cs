@@ -32,10 +32,6 @@ public class BookingController : Controller
     [Authorize]
     public ActionResult<Booking> MakeDeposit([FromForm] Booking booking)
     {
-        // Don't show bookings from other users.
-        if(booking.Customer!.Username != User.Identity!.Name)
-            return Problem($"Cannot load booking not for user {User.Identity!.Name}");
-
         // Set the booking information, set the due amount.
         booking.DepositPaid = true;
         booking.Customer = _tourDbContext.Customers.Single(c => c.Id == booking.CustomerId);
@@ -59,7 +55,9 @@ public class BookingController : Controller
     [Authorize]
     public ActionResult<Booking> ConfirmBooking([FromQuery] int bookingId)
     {
-        Booking? booking = _tourDbContext.Bookings.Find(bookingId);
+        Booking? booking = _tourDbContext.Bookings
+            .Include(b => b.Customer)
+            .SingleOrDefault(b => b.Id == bookingId);
 
         if (booking == null)
             return Problem($"Cannot find booking {bookingId}");
