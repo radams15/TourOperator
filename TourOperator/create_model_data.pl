@@ -140,7 +140,5 @@ $content =~ s/\n/\n\t\t/g;
 
 
 open FH, '>', $out_file_name;
-
 printf FH $template, $content;
-
 close FH;
