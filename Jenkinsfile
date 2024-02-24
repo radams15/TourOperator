@@ -2,9 +2,7 @@ pipeline {
     agent any
     
     stages {
-        stage('SAST') {
-            when { expression { false } }
-
+        /*stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
@@ -18,7 +16,7 @@ pipeline {
                     sh 'semgrep ci'
                 }
             }
-        }
+        }*/
 
         stage('SCA') {
             steps {
