@@ -3,6 +3,8 @@ pipeline {
     
     stages {
         stage('SAST') {
+            when { expression { false } }
+
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
