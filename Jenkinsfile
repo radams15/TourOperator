@@ -47,4 +47,15 @@ pipeline {
             }
         }
     }
+
+    stage('DAST') {
+        agent {
+            docker {
+                image 'docker.io/aquasec/trivy'
+            }
+        }
+        steps {
+            sh 'trivy image docker.io/debian:10'
+        }
+    }
 }
