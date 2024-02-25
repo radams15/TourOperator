@@ -29,19 +29,9 @@ pipeline {
         }*/
     
         stage('Build Program') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/dotnet/sdk:7.0'
-                    args '-v /var/run/docker.sock:/var/run/docker.sock -u 0'
-                }
-            }
             steps {
-                sh 'dotnet restore'
-                sh 'dotnet publish -c Release -o out'
-                sh 'dotnet publish --os linux --arch x64 /p:PublishProfile=DefaultContainer -c Release'
-                
                 script {
-                    archiveArtifacts artifacts: 'out/'
+                    dockerImage = docker.build 'touroperator'
                 }
             }
         }
