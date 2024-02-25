@@ -20,7 +20,7 @@ pipeline {
 
         stage('SCA') {
             steps {
-                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL', odcInstallation: 'OWASP Dependency-Check'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
