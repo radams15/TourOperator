@@ -19,8 +19,11 @@ pipeline {
         }*/
 
         stage('SCA') {
+            environment {
+                API_KEY = credentials('nvd')
+            }
             steps {
-                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL', odcInstallation: 'OWASP Dependency-Check'
+                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL', odcInstallation: 'OWASP Dependency-Check', dependencyTrackApiKey: API_KEY
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
