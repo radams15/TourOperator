@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        CONTAINER_REGISTRY = 'registry.redhat.io'
+        CONTAINER_REGISTRY = 'https://quay.io'
     }
     
     stages {
@@ -41,13 +41,9 @@ pipeline {
         }
 
         stage('Push Image') {
-            environment {
-                REGISTRY_CREDS = credentials('redhat-registry')
-            }
-
             steps {
                 script {
-                    docker.withRegistry(CONTAINER_REGISTRY, REGISTRY_CREDS)
+                    docker.withRegistry(CONTAINER_REGISTRY, 'quay.io')
                     dockerImage.push()
                     dockerImage.push('latest')
                 }
