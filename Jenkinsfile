@@ -39,23 +39,21 @@ pipeline {
                 sh 'dotnet publish -c Release -o out'
                 sh 'echo "#!/bin/sh\ndocker run -p5000:80 -v .:/App -w /App -it --rm mcr.microsoft.com/dotnet/aspnet:7.0 ./TourOperator" > out/run.sh && chmod +x ./out/run.sh'
                 
-                sh 'ls'
-                
                 script {
                     archiveArtifacts artifacts: 'out/'
                 }
             }
         }
-    }
 
-    stage('DAST') {
-        agent {
-            docker {
-                image 'docker.io/aquasec/trivy'
+        stage('DAST') {
+            agent {
+                docker {
+                    image 'docker.io/aquasec/trivy'
+                }
             }
-        }
-        steps {
-            sh 'trivy image docker.io/debian:10'
+            steps {
+                sh 'trivy image docker.io/debian:10'
+            }
         }
     }
 }
