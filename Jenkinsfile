@@ -23,7 +23,7 @@ pipeline {
                 API_KEY = credentials('nvd')
             }
             steps {
-                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL', odcInstallation: 'OWASP Dependency-Check', apiKey: API_KEY
+                dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL --nvdApiKey: ${API_KEY}', odcInstallation: 'OWASP Dependency-Check'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
         }
