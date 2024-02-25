@@ -54,12 +54,12 @@ pipeline {
         stage('DAST') {
             agent {
                 docker {
-                    image "quay.io/radams15/touroperator:${env.BUILD_ID}"
+                    image 'docker.io/aquasec/trivy'
                     args '--entrypoint='
                 }
             }
             steps {
-                sh 'trivy image docker.io/debian:10'
+                sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
         }
     }
