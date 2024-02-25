@@ -43,9 +43,10 @@ pipeline {
         stage('Push Image') {
             steps {
                 script {
-                    docker.withRegistry(CONTAINER_REGISTRY, 'quay.io')
-                    dockerImage.push()
-                    dockerImage.push('latest')
+                    docker.withRegistry(CONTAINER_REGISTRY, 'quay.io') {
+                        dockerImage.push()
+                        dockerImage.push('latest')
+                    }
                 }
             }
         }
