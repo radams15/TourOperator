@@ -28,7 +28,7 @@ pipeline {
             }
         }
     
-        stage('Build') {
+        stage('Build Program') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/dotnet/sdk:7.0'
@@ -37,7 +37,7 @@ pipeline {
             steps {
                 sh 'dotnet restore'
                 sh 'dotnet publish -c Release -o out'
-                sh 'echo "#!/bin/sh\ndocker run -p5000:80 -v .:/App -w /App -it --rm mcr.microsoft.com/dotnet/aspnet:7.0 ./TourOperator" > out/run.sh && chmod +x ./out/run.sh'
+                sh 'dotnet publish --os linux --arch x64 /p:PublishProfile=DefaultContainer -c Release'
                 
                 script {
                     archiveArtifacts artifacts: 'out/'
