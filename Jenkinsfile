@@ -1,5 +1,9 @@
 pipeline {
     agent any
+
+    environment {
+        CONTAINER_REGISTRY = 'registry.redhat.io'
+    }
     
     stages {
         /*stage('SAST') {
@@ -31,7 +35,21 @@ pipeline {
         stage('Build Program') {
             steps {
                 script {
-                    dockerImage = docker.build 'touroperator'
+                    dockerImage = docker.build "radams15/touroperator:${env.BUILD_ID}"
+                }
+            }
+        }
+
+        stage('Push Image') {
+            environment {
+                REGISTRY_CREDS = credentials('redhat-registry')
+            }
+
+            steps {
+                script {
+                    docker.withRegistry(CONTAINER_REGISTRY, REGISTRY_CREDS)
+                    dockerImage.push()
+                    dockerImage.push('latest')
                 }
             }
         }
