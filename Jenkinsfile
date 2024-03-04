@@ -57,4 +57,10 @@ pipeline {
             }
         }
     }
+
+  post {
+    success {
+      jabberNotify 'admin@xmpp.therhys.co.uk'
+    }
+  }
 }
