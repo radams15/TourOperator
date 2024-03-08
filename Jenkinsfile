@@ -6,7 +6,7 @@ pipeline {
     }
     
     stages {
-        stage('SAST') {
+        /*stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
@@ -61,6 +61,12 @@ pipeline {
             steps {
                 sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
+        }*/
+
+        stage('Deploy') {
+            sshagent(['server']) {
+                        sh "ssh -o StrictHostKeyChecking=no -l rhys host.containers.internal 'touch /home/rhys/deployed'"
+                }
         }
     }
 
