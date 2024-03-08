@@ -60,7 +60,7 @@ pipeline {
             }
             steps {
                 // sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
-                sh "trivy image quay.io/radams15/touroperator:latets"
+                sh "trivy image quay.io/radams15/touroperator:latest"
             }
         }
     }
