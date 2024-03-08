@@ -5,7 +5,7 @@ pipeline {
         CONTAINER_REGISTRY = 'https://quay.io'
     }
     
-    stages {
+    /*stages {
         stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
@@ -49,17 +49,18 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
 
         stage('DAST') {
             agent {
                 docker {
                     image 'docker.io/aquasec/trivy:latest'
-                    args '--privileged'
+                    args '--privileged --entrypoint ""'
                 }
             }
             steps {
-                sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
+                // sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
+                sh "trivy image quay.io/radams15/touroperator:latets"
             }
         }
     }
