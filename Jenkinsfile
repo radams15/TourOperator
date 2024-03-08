@@ -5,8 +5,8 @@ pipeline {
         CONTAINER_REGISTRY = 'https://quay.io'
     }
     
-    /*stages {
-        stage('SAST') {
+    stages {
+        /*stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
