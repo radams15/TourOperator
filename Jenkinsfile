@@ -6,7 +6,7 @@ pipeline {
     }
     
     stages {
-        /*stage('SAST') {
+        stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
@@ -49,7 +49,7 @@ pipeline {
                     }
                 }
             }
-        }*/
+        }
 
         stage('DAST') {
             agent {
@@ -59,8 +59,7 @@ pipeline {
                 }
             }
             steps {
-                // sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
-                sh "trivy image quay.io/radams15/touroperator:latest"
+                sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
         }
     }
