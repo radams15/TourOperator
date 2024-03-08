@@ -52,6 +52,12 @@ pipeline {
         }
 
         stage('DAST') {
+            agent {
+                docker {
+                    image 'docker.io/aquasec/trivy:latest'
+                    args '--privileged'
+                }
+            }
             steps {
                 sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
