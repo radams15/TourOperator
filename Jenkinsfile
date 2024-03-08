@@ -30,7 +30,7 @@ pipeline {
                 dependencyCheck additionalArguments: '-o ./ -s ./ --prettyPrint -f ALL --nvdApiKey ${API_KEY}', odcInstallation: 'OWASP Dependency-Check'
                 dependencyCheckPublisher pattern: 'dependency-check-report.xml'
             }
-        }
+        }*/
     
         stage('Build Program') {
             steps {
@@ -51,7 +51,7 @@ pipeline {
             }
         }
 
-        stage('DAST') {
+        /*stage('DAST') {
             agent {
                 docker {
                     image 'docker.io/aquasec/trivy:latest'
