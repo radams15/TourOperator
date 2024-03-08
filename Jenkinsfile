@@ -60,7 +60,7 @@ pipeline {
 
   post {
     success {
-      jabberNotify 'admin@xmpp.therhys.co.uk'
+      jabberNotify buildToChatNotifier: [$class: 'PrintFailingTestsBuildToChatNotifier'], targets: 'admin@xmpp.therhys.co.uk'
     }
   }
 }
