@@ -64,9 +64,11 @@ pipeline {
         }*/
 
         stage('Deploy') {
-            sshagent(['server']) {
+            steps {
+                sshagent(['server']) {
                         sh "ssh -o StrictHostKeyChecking=no -l rhys host.containers.internal 'touch /home/rhys/deployed'"
                 }
+            }
         }
     }
 
