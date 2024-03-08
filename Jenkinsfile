@@ -66,7 +66,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sshagent(['server']) {
-                        sh "ssh -o StrictHostKeyChecking=no -l rhys host.containers.internal 'touch /home/rhys/deployed'"
+                        sh "ssh -o StrictHostKeyChecking=no -l rhys host.containers.internal 'cd /home/rhys/containers/touroperator && podman-compose pull && podman-compose down && podman-compose up -d'"
                 }
             }
         }
