@@ -65,9 +65,7 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sshagent(['server']) {
-                        sh "ssh -o StrictHostKeyChecking=no -l rhys host.containers.internal 'cd /home/rhys/containers/touroperator && podman-compose pull && podman-compose down && podman-compose up -d'"
-                }
+               sh "curl -X POST https://portainer.therhys.co.uk/api/webhooks/d81298fe-75a8-44e9-a5a8-4de5069168c6" 
             }
         }
     }
