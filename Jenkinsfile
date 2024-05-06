@@ -13,6 +13,7 @@ pipeline {
             agent {
                 docker {
                     image 'docker.io/returntocorp/semgrep:latest'
+                    args '-u root'
                 }
             }
             steps {
