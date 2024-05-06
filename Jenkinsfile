@@ -56,7 +56,7 @@ pipeline {
             agent {
                 docker {
                     image 'docker.io/aquasec/trivy:latest'
-                    args '--privileged --entrypoint ""'
+                    args '--privileged --entrypoint "" -u root'
                 }
             }
             steps {
