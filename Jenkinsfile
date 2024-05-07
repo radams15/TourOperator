@@ -69,7 +69,7 @@ pipeline {
               git branch: 'master', url: 'https://github.com/radams15/TourOperator_Playbook.git'
             
               // install galaxy roles
-              sh "ansible-galaxy install -vvv -r requirements.yml"       
+              sh "ansible-galaxy install -vvv -r requirements.yaml"       
 
               ansiblePlaybook (
                   credentialsId: 'touroperator_ssh',
