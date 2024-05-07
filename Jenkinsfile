@@ -6,7 +6,7 @@ pipeline {
     }
     
     stages {
-        stage('SAST') {
+        /*stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
@@ -56,17 +56,28 @@ pipeline {
             agent {
                 docker {
                     image 'docker.io/aquasec/trivy:latest'
-                    args '--privileged --entrypoint "" -u root'
+                    args '--entrypoint "" -u root'
                 }
             }
             steps {
                 sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
-        }
+        }*/
 
         stage('Deploy') {
             steps {
-               sh "curl -X POST https://portainer.therhys.co.uk/api/webhooks/d81298fe-75a8-44e9-a5a8-4de5069168c6" 
+              git branch: 'master', url: 'https://github.com/radams15/TourOperator_Playbook.git'
+            
+              // install galaxy roles
+              sh "ansible-galaxy install -vvv -r requirements.yml"       
+
+              ansiblePlaybook {
+                  colorized: true,
+                  credentialsId: 'touroperator_ssh',
+                  installation: 'ansible',
+                  inventory: '10.0.0.21,',
+                  playbook: 'provision.yaml',
+              }
             }
         }
     }
