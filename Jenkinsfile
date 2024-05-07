@@ -6,7 +6,7 @@ pipeline {
     }
     
     stages {
-        /*stage('SAST') {
+        stage('SAST') {
             environment {
                 SEMGREP_APP_TOKEN = credentials('semgrep')
             }
@@ -62,13 +62,13 @@ pipeline {
             steps {
                 sh "trivy image quay.io/radams15/touroperator:${env.BUILD_ID}"
             }
-        }*/
+        }
 
         stage('Deploy') {
             steps {
               git branch: 'master', url: 'https://github.com/radams15/TourOperator_Playbook.git'
             
-              // install galaxy roles
+              // install requirements
               sh "ansible-galaxy install -vvv -r requirements.yaml"       
 
               ansiblePlaybook (
