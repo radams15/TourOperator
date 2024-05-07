@@ -71,13 +71,12 @@ pipeline {
               // install galaxy roles
               sh "ansible-galaxy install -vvv -r requirements.yml"       
 
-              ansiblePlaybook {
-                  colorized: true,
+              ansiblePlaybook (
                   credentialsId: 'touroperator_ssh',
                   installation: 'ansible',
                   inventory: '10.0.0.21,',
                   playbook: 'provision.yaml',
-              }
+              )
             }
         }
     }
