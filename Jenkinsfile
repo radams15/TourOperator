@@ -76,6 +76,7 @@ pipeline {
                   installation: 'ansible',
                   inventory: '10.0.0.21,',
                   playbook: 'provision.yaml',
+                  hostKeyChecking: false
               )
             }
         }
