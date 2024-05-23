@@ -49,6 +49,14 @@ app.UseSession();
 
 app.UseRouting();
 
+app.Use(async (context, next) =>
+          {
+              context.Response.Headers.Add("Content-Security-Policy", "script-src 'self' https://cdnjs.cloudflare.com; style-src 'self'; img-src 'self'; connect-src 'self'; frame-src 'self'; frame-ancestors 'self'; font-src 'self'; media-src 'self'; object-src 'self'; manifest-src 'self'; form-action 'self'; data:");
+             
+              await next();
+          });
+
+
 app.UseCookiePolicy(new CookiePolicyOptions
 {
     MinimumSameSitePolicy = SameSiteMode.Strict,
