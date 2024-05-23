@@ -6,8 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<TourDbContext>(opt => opt
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-    //.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-    .EnableSensitiveDataLogging()
 );
 
 builder.Services.AddSession(opt =>
